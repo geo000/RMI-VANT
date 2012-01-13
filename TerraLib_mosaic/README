@@ -1,0 +1,64 @@
+1) To run this example, create a folder called "mosaico" in image_processing/resources
+
+$ sudo mkdir TerraLib_directory/examples/image_processing/resources/mosaico
+
+2) Paste the rasters in this folder
+
+Below is an explanation of how to compile TerraLib
+
+=================================
+How to complie TerraLib on Ubuntu
+=================================
+
+1) Install the C++ compiler and libraries
+
+   $ sudo apt-get install gcc g++ build-essential autoconf automake cmake ccache
+
+2) Install SVN
+
+   $ sudo apt-get install subversion
+
+3) SVN TerraLib 4.2.0
+
+   $ cd / SVN_directory
+
+   $ sudo svn co https://svn.dpi.inpe.br/terralib/tags/v-4-2-0/ terralib420
+
+4) Install dependencies (bin and dev)
+
+   $ sudo apt-get install libtool
+
+   $ sudo apt-get install libgeotiff-dev libgeotiff1.2
+
+   $ sudo apt-get install libjpeg62-dev libjpeg62	
+
+   $ sudo apt-get install libtiff4-dev
+
+5) If the library geotiff* lie inside the folder /usr/include/geotiff/ then correct the files below as follows:
+
+* Generally not created within the folder include geotiff. If there is, make the corrections.
+
+   $ sudo gedit SVN_directory/terralib420/src/terralib/kernel/TeDecoderTIFF.h
+
+	// LibTIFF includes
+	#include "geotiff/geotiff.h"
+	#include " geotiff/xtiffio.h"
+
+   $ sudo gedit SVN_directory/terralib420/src/terralib/kernel/TeDecoderTIFF.cpp
+
+	#include < geotiff/ geovalues.h>
+	#include < geotiff/ geo_normalize.h>
+	#include < geotiff/ geo_tiffp.h>
+
+
+6) Compiling TerraLib
+
+   $ autoreconf -iv
+
+   Check the configuration options
+
+   $ ./configure --help
+
+   Below is compilation used (without - enable-shapelib does not compile):
+   $ ./configure --with-jpeg --with-geotiff --enable-examples --enable-shapelib
+   $ make
