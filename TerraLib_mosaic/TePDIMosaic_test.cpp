@@ -70,16 +70,17 @@
 /****************************************************************************
  2.5 Internal function prototypes (defined in Section 4)
 *****************************************************************************/
-TeSharedPtr< TeCoordPairVect > matching(
+TeGTParams matching(
 	 TePDITypes::TePDIRasterPtrType input_image1_ptr,
-	 TePDITypes::TePDIRasterPtrType input_image2_ptr
+	 TePDITypes::TePDIRasterPtrType input_image2_ptr,
+	 TeSharedPtr< TeCoordPairVect > &out_tie_points_ptr_
 );
 
 void mosaic(
-	 TeSharedPtr< TeCoordPairVect > out_tie_points_ptr,
 	 TePDITypes::TePDIRasterPtrType input_raster1,
 	 TePDITypes::TePDIRasterPtrType input_raster2,
-	 TePDITypes::TePDIRasterPtrType output_raster
+	 TePDITypes::TePDIRasterPtrType output_raster,
+	 TeGTParams trans_params
 );
 
 TePDITypes::TePDIRasterPtrType loadRaster( std::string raster );
@@ -104,56 +105,65 @@ int main()
   TePDITypes::TePDIRasterPtrType input_image2_ptr;
   TePDITypes::TePDIRasterPtrType output_image;
   TeSharedPtr< TeCoordPairVect > out_tie_points_ptr;
+  TeGTParams gt_params;
   
-  input_image1_ptr = loadRaster( "IMG_0361.JPG" );
-  input_image2_ptr = loadRaster( "IMG_0362.JPG" );
-  
-  TEAGN_LOGMSG(
-  	"Loading time of images: " +
-  	TeAgnostic::to_string( (long int)( end_time - init_time ) ) +
-  	" seconds"
-  );
-  
-  /******************* Matching and Mosaic Beginning *******************/
-  init_time = clock() / CLOCKS_PER_SEC;
-  
-  out_tie_points_ptr = matching( input_image1_ptr, input_image2_ptr );
-  
-  mosaic( out_tie_points_ptr, input_image1_ptr, input_image2_ptr, output_image );
-  
-  end_time = clock() / CLOCKS_PER_SEC;
-  TEAGN_LOGMSG(
-  	"Total elapsed time: " +
-  	TeAgnostic::to_string( (long int)( end_time - init_time ) ) +
-  	" seconds"
-  );
-  /*******************    Matching and Mosaic End    *******************/
-  
-  // Displaying tie-points
-  TEAGN_LOGMSG( "Tie-points" );
-  {
-    TeCoordPairVect::iterator it = out_tie_points_ptr->begin();
-    TeCoordPairVect::iterator it_end = out_tie_points_ptr->end();
-    
-    while( it != it_end ) {
-      std::cout << "[" + Te2String( it->pt1.x(),1 ) + " , " +
-        Te2String( it->pt1.y(),1 ) + "] -> [" +
-        Te2String( it->pt2.x(),1 ) + " , " + 
-        Te2String( it->pt2.y(),1 ) + "]" << std::endl;
-      
-      ++it;
-    }
-  }
-  
-  // Tie-points draw
-  raster2Jpeg( input_image1_ptr, 3, TEPDIEXAMPLESRESPATH "mosaico/Matching1.JPG", out_tie_points_ptr, 0 );
-  raster2Jpeg( input_image2_ptr, 3, TEPDIEXAMPLESRESPATH "mosaico/Matching2.JPG", out_tie_points_ptr, 1 );
-
-  // Save Mosaic
   TEAGN_TRUE_OR_THROW(
-  	TePDIUtils::TeRaster2Jpeg( output_image, TEPDIEXAMPLESRESPATH "mosaico/MatchingMosaico.JPG", false, 70 ),
-  	"JPEG generation error"
+        TePDIUtils::TeAllocRAMRaster( output_image, 1, 1, 1, false, TeUNSIGNEDCHAR, 0 ),
+        "output_raster Alloc error"
   );
+  
+  int numberOfMosaics = 5;
+  
+  for( int mosaicNumber = 0; mosaicNumber < numberOfMosaics; ++mosaicNumber)
+  {
+          /******************* Matching and Mosaic Beginning *******************/
+          init_time = clock() / CLOCKS_PER_SEC;
+          
+          if( mosaicNumber == 0 ) {
+            input_image1_ptr = loadRaster( "IMG_0365.jpg" );
+            input_image2_ptr = loadRaster( "IMG_0366.jpg" );
+          } else if( mosaicNumber == 1 ) {
+            input_image1_ptr = loadRaster( "Mosaic0.jpg" );
+            input_image2_ptr = loadRaster( "IMG_0367.jpg" );
+          } else if( mosaicNumber == 2 ) {
+            input_image1_ptr = loadRaster( "Mosaic1.jpg" );
+            input_image2_ptr = loadRaster( "IMG_0368.jpg" );
+          }
+          
+          TEAGN_LOGMSG( "Matching started" );
+          gt_params = matching( input_image1_ptr, input_image2_ptr, out_tie_points_ptr );
+          
+          TEAGN_LOGMSG( "Mosaic started" );
+          mosaic( input_image1_ptr, input_image2_ptr, output_image, gt_params );
+          
+          end_time = clock() / CLOCKS_PER_SEC;
+          TEAGN_LOGMSG(
+          	"Total elapsed time: " +
+          	TeAgnostic::to_string( (long int)( end_time - init_time ) ) +
+          	" seconds"
+          );
+          /*******************    Matching and Mosaic End    *******************/
+          
+          TEAGN_LOGMSG( "Saving Images with Tie-points" );
+          raster2Jpeg(
+                input_image1_ptr, 3,
+                TEPDIEXAMPLESRESPATH "mosaic/Tie_Points" + Te2String(mosaicNumber) + "a.jpg", out_tie_points_ptr, 0
+          );
+          raster2Jpeg(
+                input_image2_ptr, 3,
+                TEPDIEXAMPLESRESPATH "mosaic/Tie_Points" + Te2String(mosaicNumber) + "b.jpg", out_tie_points_ptr, 1
+          );
+          
+          TEAGN_LOGMSG( "Saving Mosaic Result" );
+          TEAGN_TRUE_OR_THROW(
+          	TePDIUtils::TeRaster2Jpeg(
+          	        output_image,
+          	        TEPDIEXAMPLESRESPATH "mosaic/Mosaic" + Te2String(mosaicNumber) + ".jpg",
+          	        false, 100
+          	),
+          	"JPEG generation error"
+          );
+  }
   
   return EXIT_SUCCESS;
 }
@@ -174,9 +184,10 @@ int main()
 * out_tie_points_ptr    ( TeSharedPtr< TeCoordPairVect > ) output tie-points
 *******************************************************************************/
 
-TeSharedPtr< TeCoordPairVect > matching(
+TeGTParams matching(
 	 TePDITypes::TePDIRasterPtrType input_image1_ptr,
-	 TePDITypes::TePDIRasterPtrType input_image2_ptr
+	 TePDITypes::TePDIRasterPtrType input_image2_ptr,
+	 TeSharedPtr< TeCoordPairVect > &out_tie_points_ptr_
 	 )
 {
   // Creating parameters
@@ -206,12 +217,17 @@ TeSharedPtr< TeCoordPairVect > matching(
   TeGTParams gt_params;
   
   /*****************************************************************************
-  * Transformation_name = affine
+  * Transformations
+  *-----------------------------------------------------------------------------
+  * affine              2D affine geometric trasformation
+  * 2ndDegPolinomial    Second degree polinomial model geometric trasformation
+  * projective          Projective geometric trasformation
   *****************************************************************************/
   gt_params.transformation_name_ = "affine";
   
   /*****************************************************************************
   * Outliers remotion strategy
+  *-----------------------------------------------------------------------------
   * NoOutRemotion        No outliers remotion applied
   * ExaustiveOutRemotion Exaustive outliers remotion
   * LWOutRemotion        Iteractive leave-worse-out) will remotion be performed
@@ -219,10 +235,10 @@ TeSharedPtr< TeCoordPairVect > matching(
   *****************************************************************************/
   gt_params.out_rem_strat_       = TeGTParams::LWOutRemotion;
   
-  gt_params.max_dmap_error_      = 20; // Direct mapping error
-  gt_params.max_imap_error_      = 20; // Inverse mapping error
-//  gt_params.max_dmap_rmse_       = 1 ; // Direct mapping mean square error
-//  gt_params.max_imap_rmse_       = 1 ; // Inverse mapping mean square error
+  gt_params.max_dmap_error_      = 2; // Direct mapping error
+  gt_params.max_imap_error_      = 2; // Inverse mapping error
+  gt_params.max_dmap_rmse_       = 1 ; // Direct mapping mean square error
+  gt_params.max_imap_rmse_       = 1 ; // Inverse mapping mean square error
   
   params.SetParameter( "gt_params" , gt_params );
   
@@ -249,44 +265,47 @@ TeSharedPtr< TeCoordPairVect > matching(
   TEAGN_TRUE_OR_THROW( match_instance.Reset( params ), "Algorithm reset error" );
   
   TEAGN_TRUE_OR_THROW( match_instance.Apply(), "Algorithm apply error" );
+  
+  TEAGN_LOGMSG( "Load Tie-points" );
+  TeCoordPair auxPair;
+  TeCoordPairVect::iterator it     = out_tie_points_ptr->begin();
+  TeCoordPairVect::iterator it_end = out_tie_points_ptr->end();
+  while( it != it_end ) {
+  	auxPair.pt1.setXY( it->pt1.x(), it->pt1.y() ); // point over input image 1
+  	auxPair.pt2.setXY( it->pt2.x(), it->pt2.y() ); // the corresponding point over input image 2
+  	gt_params.tiepoints_.push_back( auxPair );
+  	
+        std::cout << "[" + Te2String( it->pt1.x(),1 ) + " , " +
+        Te2String( it->pt1.y(),1 ) + "] -> [" +
+        Te2String( it->pt2.x(),1 ) + " , " + 
+        Te2String( it->pt2.y(),1 ) + "]" << std::endl;
+        
+  	++it;
+  }
+  
+  out_tie_points_ptr_ = out_tie_points_ptr;
     
-  return( out_tie_points_ptr );
+  return( gt_params );
 }
 
 /*******************************************************************************
 * mosaic() :: The required parameters are:
 *-------------------------------------------------------------------------------
-*
+* input_raster1         Input raster 1 (this will be the reference raster)
+* input_raster2         Input raster 2
+* channels1             The channels to process from input_raster1
+* channels2             The channels to process from input_raster2
+* output_raster         Output raster
+* trans_params          Geometric transformation parameters
 *******************************************************************************/
 void mosaic(
-	 TeSharedPtr< TeCoordPairVect > out_tie_points_ptr,
 	 TePDITypes::TePDIRasterPtrType input_raster1,
 	 TePDITypes::TePDIRasterPtrType input_raster2,
-	 TePDITypes::TePDIRasterPtrType output_raster
+	 TePDITypes::TePDIRasterPtrType output_raster,
+	 TeGTParams trans_params
 	 )
-{
-
-//  TEAGN_TRUE_OR_THROW( input_raster1->init(), "Unable to init input_raster1" );
-//  TEAGN_TRUE_OR_THROW( input_raster2->init(), "Unable to init input_raster2" );
-        
-  // The geometric transformation parameters telling how the input rasters are overlapped
-  TeGTParams trans_params;
-  trans_params.transformation_name_ = "affine";
-  trans_params.out_rem_strat_ = TeGTParams::NoOutRemotion;  
-  
-  // Load tie-points to Mosaic
-  TeCoordPair auxPair;
-  TeCoordPairVect::iterator it     = out_tie_points_ptr->begin();
-  TeCoordPairVect::iterator it_end = out_tie_points_ptr->end(); 
-  while( it != it_end ) {
-  	auxPair.pt1.setXY( it->pt1.x(), it->pt1.y() ); // point over input image 1
-  	auxPair.pt2.setXY( it->pt2.x(), it->pt2.y() ); // the corresponding point over input image 2
-  	trans_params.tiepoints_.push_back( auxPair );
-  	
-  	++it;
-  }
-      
-  // Other parameters
+{     
+  // Config Channels
   std::vector< unsigned int > channels1;
   channels1.push_back( 0 );
   channels1.push_back( 1 );
@@ -299,16 +318,40 @@ void mosaic(
     
   // Creating algorithm parameters
   TePDIParameters params;
-  params.SetParameter( "input_raster1" , input_raster1 );
-  params.SetParameter( "input_raster2" , input_raster2 );
-  params.SetParameter( "channels1" , channels1 );
-  params.SetParameter( "channels2" , channels2 );
-  params.SetParameter( "output_raster" , output_raster );
-  params.SetParameter( "trans_params" , trans_params );
-  params.SetParameter( "blend_method", TePDIBlender::EuclideanBlendMethod );
-  params.SetParameter( "interp_method", TePDIInterpolator::NNMethod );
-  params.SetParameter( "dummy_value" , (double)0.0 );
-  params.SetParameter( "auto_equalize" , (int)1 );
+  params.SetParameter( "input_raster1", input_raster1 );
+  params.SetParameter( "input_raster2", input_raster2 );
+  params.SetParameter( "channels1", channels1 );
+  params.SetParameter( "channels2", channels2 );
+  params.SetParameter( "output_raster", output_raster );
+  params.SetParameter( "trans_params", trans_params );
+  
+  /*****************************************************************************
+  * Blend Method (default: TePDIBlender::NoBlendMethod)
+  *-----------------------------------------------------------------------------
+  * TePDIBlender::NoBlendMethod         No blending performed
+  * TePDIBlender::MeanBlendMethod       Mean of overlapped pixels method
+  * TePDIBlender::EuclideanBlendMethod  Euclidean distance based blending method
+  *****************************************************************************/
+  params.SetParameter( "blend_method", TePDIBlender::NoBlendMethod );
+  
+  /*****************************************************************************
+  * Interpolation method (default TePDIInterpolator::NNMethod)
+  *-----------------------------------------------------------------------------
+  * TePDIInterpolator::NNMethod         Near neighborhood interpolation method
+  * TePDIInterpolator::BilinearMethod   Bilinear interpolation method
+  * TePDIInterpolator::BicubicMethod    Bicubic interpolation method
+  *****************************************************************************/
+  params.SetParameter( "interp_method", TePDIInterpolator::BilinearMethod );
+  
+  /*****************************************************************************
+  * A dummy pixel value for use in pixels where no data is available
+  *****************************************************************************/
+  //params.SetParameter( "dummy_value", (double)0 );
+  
+  /*****************************************************************************
+  * If present auto-equalizing will be made (using overlap area reference)
+  *****************************************************************************/  
+  params.SetParameter( "auto_equalize", (int)1 );
   
   TePDITPMosaic mos;
   TEAGN_TRUE_OR_THROW( mos.Apply( params ), "Apply error" );
@@ -325,7 +368,7 @@ TePDITypes::TePDIRasterPtrType loadRaster( std::string raster )
   
   TEAGN_TRUE_OR_THROW(
   	TePDIUtils::loadRaster( 
-  		std::string( TEPDIEXAMPLESRESPATH "mosaico/" + raster ),
+  		std::string( TEPDIEXAMPLESRESPATH "mosaic/" + raster ),
   		input_image_ptr, true
   	),
   	"Error loading raster"

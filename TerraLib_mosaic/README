@@ -1,4 +1,4 @@
-1) To run this example, create a folder called "mosaico" in image_processing/resources
+1) To run this example, create a folder called "mosaic" in image_processing/resources
 
 $ sudo mkdir TerraLib_directory/examples/image_processing/resources/mosaico
 
