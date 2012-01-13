@@ -44,7 +44,7 @@
 \maketitle
 
 \begin{abstract}
-Neste trabalho foram pesquisadas soluções para registro e mosaico de imagens adquiridas por câmera digital a bordo de VANT. Buscamos resolver basicamente dois problemas apresentados na geração de mosaico de sequências de imagens aéreas: i) distorções geométricas inseridas na imagens devido às variações de altitude, ii) distorções (escala, projeção e ângulo de visada) nas imagens de baixas altitudes e que possuem cenas de objetos altos, tais como prédios e montanhas.
+Neste trabalho foi pesquisado soluções para montagem de mosaico com imagens adquiridas por câmera digital a bordo de VANT. A ideia é apresentar soluções para dois tipos de problemas que ocorrem na geração do mosaico: i) distorções geométricas inseridas na imagens devido às variações de altitude, ii) distorções (escala, projeção e ângulo de visada) nas imagens de baixas altitudes e que possuem cenas de objetos altos, tais como prédios e montanhas.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -52,11 +52,11 @@ Registro de Imagens, Mosaico, VANT, TerraLib, SIFT.
 \end{IEEEkeywords}
 
 \section{Introdução}
-\IEEEPARstart{A} utilização de Veículos Aéreos não Tripulados (VANTs) tem apresentado grande crescimento nos últimos anos devido a diversos fatores, tais como ausência de tripulação em tarefas tediosas, cansativas ou que envolvem riscos à tripulação, baixo custo operacional e de fabricação comparados às aeronaves convencionais, entre outros. Imagens aéreas obtidas através de VANTs possuem grandes aplicabilidades \cite{canhoto}, e o objetivo geral deste trabalho é encontrar soluções para o registro e mosaico de imagens adquiridas por câmera digital a bordo de aeronaves não tripuladas.
+\IEEEPARstart{A} utilização de Veículos Aéreos não Tripulados (VANTs) tem apresentado grande crescimento nos últimos anos devido a diversos fatores, tais como ausência de tripulação em tarefas tediosas, cansativas ou que envolvem riscos à tripulação, baixo custo operacional e de fabricação comparados às aeronaves convencionais, entre outros. Imagens aéreas obtidas através de VANTs possuem grandes aplicabilidades \cite{canhoto}, e o objetivo geral deste trabalho é encontrar solução para distorções geométricas no mosaico de imagens adquiridas por câmera digital a bordo de aeronaves não tripuladas.
 
 O mosaico de sequências de imagens aéreas apresenta alguns problemas de distorções geométricas devido às variações de altitudes da aeronave e distorções devido as diferenças de escala, projeção e ângulo de visada em cenas de baixa altitude e que apresentam prédios e montanhas. Outro problema também enfrentado ao mosaicar esse tipo de imagem, é que quando a aeronave realiza curvas para seguir o plano de voo traçado captura imagens com sistema de coordenadas rotacionadas em ângulos diferentes e desconhecidos, e isso também gera distorções que buscamos resolver neste trabalho.
 
-Na Figura~\ref{fig:plano_voo} pode-se observar o exemplo de um plano de voo para um VANT. As imagens adquiridas pela câmera digital não possuem georeferenciamento, e são coletadas a cada um segundo. Após o término da aquisição das imagens, as mesmas necessitam ser mosaicadas, e o passo inicial para essa tarefa é o registro de imagens, que inicia a busca por correspondências entre imagens diferentes que representam a mesma cena \cite{goltz1}. Neste trabalho, a busca por correspondências entre pontos de imagens diferentes é realizada e comparada entre diversos algoritmos: SIFT proposto por \cite{lowe} e implementado em C++ por \cite{vedaldi} e pelos algoritmos de registro implementados na biblioteca TerraLib.
+Na Figura~\ref{fig:plano_voo} pode-se observar o exemplo de um plano de voo para um VANT. As imagens adquiridas pela câmera digital não possuem georeferenciamento, e são coletadas a cada um segundo. Após o término da aquisição das imagens, as mesmas necessitam ser mosaicadas.O procedimento inicial para essa tarefa é o registro de imagens, que inicia a busca por correspondências entre imagens diferentes que representam a mesma cena \cite{goltz1}. Neste trabalho, a busca por correspondências entre pontos de imagens diferentes é realizada e comparada entre os algoritmos: SIFT proposto por \cite{lowe} e pelos algoritmos de registro implementados na biblioteca TerraLib.
 
 \begin{figure}[h!t]
   \centering
@@ -68,9 +68,6 @@ Na Figura~\ref{fig:plano_voo} pode-se observar o exemplo de um plano de voo para
 \section{Algoritmo SIFT}
 
 O algoritmo SIFT - Scale Invariant Feature Transform foi desenvolvido por [1] em 1999 e sua função é construir descritores de pontos-chaves de uma imagem, sendo este descritores independentes das mudanças de escala, rotação, translação e luminosidade que uma imagem pode sofrer. Utilizamos neste trabalho a implementação em C++ obtida em \cite{vedaldi}.
-
-\section{Busca por Correspondências}
-
 O SIFT é utilizado na busca por correspondências entre sequência de imagens diferentes que contenham partes da mesma cena. A busca é feita através de pontos-chave correspondentes, utilizando-se seus descritores. Nesta pesquisa a distância euclidiana é utilizada em três abordagens diferentes para avaliar a mais apropriada para imagens obtidas por VANTs. Os algoritmos de cada abordagem são: DistEuclidConvencional, o qual aplica a função de busca diretamente, sem tratar seus resultados. DistEuclidRedundante, que chama a função de busca duas vezes, a segunda chamada é feita invertendo-se os parâmetros da função, somente correspondências que ocorram em ambas são guardadas. DistEuclidEsc onde observa-se a continuidade de escala entre segmentos de reta traçados entre os pontos pertencentes e às correspondências geradas por esta função.
 
 % \begin{figure}[!t]
@@ -79,6 +76,21 @@ O SIFT é utilizado na busca por correspondências entre sequência de imagens d
 %  \caption{Fluxograma do Programa}
 %  \label{fig:fluxograma}
 % \end{figure}
+
+\section{Transformadas Geométricas}
+\IEEEPARstart{T} ( texto do Juliano)
+
+\section{ Fluxograma para gerar o Mosaico}
+ A montagem do mosaico se baseia em duas classes do Terralib, o arquivo MMIOMatching recebe duas imagens e apresenta como resultado os pontos de controle da cena, que são representados através de dois vetores para calculo da função de transformação. Esses pontos localizados são acrescentados na imagem que é salva com outro nome.
+(Talvez colocar algo da dissetação do Dmitri Fedorov)
+ Já o segundo arquivo  Mosaic recebe como entrada  a saida do  arquivo MMIOMatching, ou seja, os vetores  que representam os pontos de controle, além das imagens que serão mosaicadas e o nome da nova imagem.
+(Devemos definir as configurações nesse item, qual foi a função de transformação que usamos entre outros detalhes, seria interessante fazer um desenho com explicando esse clico)
+
+\section{Resultados}
+Devemos descrever quanto tempo levou para executar, quantas imagens foram utilizadas para gerar o mosaico, quais as vantagens. 
+
+\section{Comparação dos algoritmos}
+Comparação do SIFT e dos algoritmos do Terralib
 
 \section{Conclusão}
 Conclusão aqui.
