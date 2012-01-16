@@ -13,7 +13,7 @@
 \usepackage{url}
 \usepackage{graphicx}
 \usepackage{amsmath}%pacote necessário para a utilização de algumas funções matemáticas nas formulas
-
+\usepackage{float}%responsável por o posicionamento de figuras
 
 % correct bad hyphenation here
 \hyphenation{pro-ble-mas mosaico}

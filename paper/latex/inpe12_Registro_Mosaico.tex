@@ -244,7 +244,7 @@ Esse operador é baseado na função de auto-correlação do signal. Ele compara
 deslocadas em quatro direções paralelas à colunas e linhas. Se o mínimo dessas quatro diferenças é superior a um determinado limiar, então um ponto de interesse
 foi encontrado.\cite{Coderlia1}
   
-O operador Moravec pode ser definido matemáticamente como:
+O operador Moravec pode ser definido matematicamente como:
     \begin{center}$V_{1}=\frac{1}{p(q-1)}\sum_{i=-k}^k\sum_{j=-l}^{l-1}\bigl(g(i,j)-g(i,j+1)\bigr)^2$    \end{center}
     \begin{center}$V_{2}=\frac{1}{(p-1)q}\sum_{i=-k}^{k-1}\sum_{j=-l}^l\bigl(g(i,j)-g(i+1,j)\bigr)^2$    \end{center}
     \begin{center}$V_{3}=\frac{1}{(p-1)(q-1)}\sum_{i=-k}^{k-1}\sum_{j=-l}^{l-1}\bigl(g(i,j)-g(i+1,j+1)\bigr)^2$\end{center}
