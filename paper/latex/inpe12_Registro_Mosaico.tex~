@@ -202,22 +202,25 @@ z\\
 
 
 \subsection{Tipos de transformação}
-É necessário primeiramente assumir que a função de transformação $F$ mapeia um conjunto de reais de tamanho $n$ em um outro conjunto de reais de tamanho $m$.
-Pode-se dividir basicamente as transformações em três tipos.
+É necessário primeiramente 
 \subsubsection{Linear}
 A transformação linear ou também chamada de euclidiana, pode ser definida como:
 \begin{center}
 $F(x)=Qx$\end{center}
 Sendo que $Q=n\times m$.
 Ou seja, transformações do tipo lineares são aquelas obtidas através de mutliplicações matriciais.
-Assim, através das transformações lineares pode-se realizar operações de rotação e translação.\cite{CGPPBook1}
+Assim, através das transformações lineares pode-se realizar operações de rotação, cisalhamento e variação de escala.\cite{CGPPBook1}
 \subsubsection{Afim}
 A transformação Afim é uma transformação que compreende as operações que a transformação linear
-consegue executar mais as operações de cisalhamento e de variação de escala. A transformada em questão pode ser definida como:
+consegue executar mais a operação de translação. A transformada em questão pode ser definida como:
 
 \begin{center}
 $F(x)=Qx+q$\end{center}
-Sendo que $Q=n\times m$ e $q$ é um escalar. \cite{CGPPBook1}
+Sendo que $Q=n\times m$ e $q$ tem tamanho $m$. \cite{CGPPBook1}
+
+\subsubsection{Polinômio Segundo Grau}
+
+$F(x)=a_{0}+a_{1}x+a_{2}y+a_{3}xy+a_{4}x^{2}+a_{5}y^{2}$
 
 \subsubsection{Projeção}
 
@@ -244,7 +247,7 @@ Esse operador é baseado na função de auto-correlação do signal. Ele compara
 deslocadas em quatro direções paralelas à colunas e linhas. Se o mínimo dessas quatro diferenças é superior a um determinado limiar, então um ponto de interesse
 foi encontrado.\cite{Coderlia1}
   
-O operador Moravec pode ser definido matemáticamente como:
+O operador Moravec pode ser definido matematicamente como:
     \begin{center}$V_{1}=\frac{1}{p(q-1)}\sum_{i=-k}^k\sum_{j=-l}^{l-1}\bigl(g(i,j)-g(i,j+1)\bigr)^2$    \end{center}
     \begin{center}$V_{2}=\frac{1}{(p-1)q}\sum_{i=-k}^{k-1}\sum_{j=-l}^l\bigl(g(i,j)-g(i+1,j)\bigr)^2$    \end{center}
     \begin{center}$V_{3}=\frac{1}{(p-1)(q-1)}\sum_{i=-k}^{k-1}\sum_{j=-l}^{l-1}\bigl(g(i,j)-g(i+1,j+1)\bigr)^2$\end{center}
