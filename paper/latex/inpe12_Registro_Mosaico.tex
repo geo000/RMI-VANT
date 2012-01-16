@@ -12,6 +12,8 @@
 \usepackage[T1]{fontenc} % permite copiar texto com acento em PDF
 \usepackage{url}
 \usepackage{graphicx}
+\usepackage{amsmath}%pacote necessário para a utilização de algumas funções matemáticas nas formulas
+\usepackage{float}%responsável por o posicionamento de figuras
 
 % correct bad hyphenation here
 \hyphenation{pro-ble-mas mosaico}
@@ -25,7 +27,7 @@
   \IEEEauthorblockN{
     Marcos Eduardo Gomes Borges \IEEEauthorrefmark{1}\\
     Marina Laís da Silva Nascimento \IEEEauthorrefmark{1}\\
-    Juliano Elias Cardoso Cruz \IEEEauthorrefmark{1}\\
+    Juliano E. C. Cruz \IEEEauthorrefmark{1}\\
     Leila Maria Garcia Fonseca \IEEEauthorrefmark{2} \linebreak\linebreak
   }
   \IEEEauthorblockA{
@@ -41,7 +43,10 @@
 \markboth{Journal of DPI-INPE,~Vol.~XX, No.~1, Janeiro~2012}%
 {Shell \MakeLowercase{\textit{et al.}}: Trabalho de PDI - INPE}
 
-\maketitle
+\maketitle               
+\renewcommand\abstractname{Resumo}
+\renewcommand{\refname}{Referências}
+
 
 \begin{abstract}
 Neste trabalho foi pesquisado soluções para registro e mosaico de imagens adquiridas por câmera digital a bordo de VANT. A ideia é apresentar soluções para dois tipos de problemas que ocorrem ao mosaicar sequências de imagens aéreas: i) distorções geométricas inseridas na imagens devido às variações de altitude, ii) distorções (escala, projeção e ângulo de visada) nas imagens de baixas altitudes e que possuem cenas de objetos altos, tais como prédios e montanhas.
@@ -60,7 +65,7 @@ Na Figura~\ref{fig:plano_voo} pode-se observar o exemplo de um plano de voo para
 
 \begin{figure}[h!t]
   \centering
-  \includegraphics[width=3.5in]{figuras/plano_voo}
+  \includegraphics[width=3.5in]{figuras/plano_voo.png}
   \caption{Exemplo de Plano de Voo do VANT}
   \label{fig:plano_voo}
 \end{figure}
@@ -80,7 +85,191 @@ O SIFT é utilizado na busca por correspondências entre sequência de imagens d
 \clearpage
 
 \section{Transformadas Geométricas}
-( texto do Juliano )
+\PARstart Transformação geométrica é o nome que se dá à aplicação de uma determinada função matemática em uma determinada figura geométrica 
+em que o resultado é geometricamente igual ou semelhante à figura original.
+
+\subsection{Transformações elementares}
+\subsubsection{Translação}
+A translação desloca um determinado ponto ou conjunto de pontos uma determinada distância em um determinado sentido.
+
+\begin{center}
+$\begin{bmatrix}x'\\
+y'
+\end{bmatrix}=\begin{bmatrix}x\\
+y
+\end{bmatrix}+\begin{bmatrix}t_{x}\\
+t_{y}
+\end{bmatrix}$\end{center}
+Onde $t_{x}~~ \textrm{e} ~~ t_{y}$ são respectivamente as taxas de translação no eixo $x~~ \textrm{e} ~~y$.\cite{CGPPBook1}
+
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.25]{figuras/translation1.png}
+\caption{Exemplo de translação em um espaço bidimensional}
+\end{center}
+\end{figure}
+
+\subsubsection{Variação de escala}
+
+A variação de escala é o fato de se esticar ou encolher uma determinada figura em relação ao eixos $x$ e $y$.
+
+\begin{center}
+$\begin{bmatrix}x'\\
+y'
+\end{bmatrix}=\begin{bmatrix}v_{x} & 0\\
+0 & v_{y}
+\end{bmatrix}\begin{bmatrix}x\\
+\frac{}{}y
+\end{bmatrix}$\end{center}
+Onde $v_{x}~~ \textrm{e} ~~ v_{y}$ são respectivamente as taxas de escala no eixo $x~~ \textrm{e} ~~y$.\cite{CGPPBook1}
+
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.25]{figuras/scale1.png}
+\caption{Exemplo de variação de escala em um espaço bidimensional}
+\end{center}
+\end{figure}
+
+
+\subsubsection{Rotação}
+Na rotação rotaciona-se a figura em torno de um determinado eixo.
+
+\begin{center}
+$\begin{bmatrix}x'\\
+y'
+\end{bmatrix}=\begin{bmatrix}cos\theta & -sen\theta\\
+cos\theta & sen\theta
+\end{bmatrix}\begin{bmatrix}x\\
+y
+\end{bmatrix}$\end{center}
+Onde $\theta$ é o ângulo que a figura será rotacionada em relação a posição original levando em consideração a origem como eixo. \cite{CGPPBook1}
+
+\begin{figure}[H] 
+\begin{center}
+\includegraphics[scale=0.25]{figuras/rotation1.png}
+\caption{Exemplo de rotação em um espaço bidimensional}
+\end{center}
+\end{figure}
+
+\subsubsection{Cisalhamento}
+O cisalhamento resulta em um movimento translacional na direção de um eixo no qual a magnitude
+aumenta ao longo do outro eixo.
+
+\begin{center}
+$\begin{bmatrix}x'\\
+y'
+\end{bmatrix}=\begin{bmatrix}1 & c\\
+1 & 0
+\end{bmatrix}\begin{bmatrix}x\\
+y
+\end{bmatrix}$\end{center}
+Onde $c$ é o coeficiente de cisalhamento.\cite{CGPPBook1}
+
+\begin{figure}[H] 
+\begin{center}
+\includegraphics[scale=0.25]{figuras/shear1.png}
+\caption{Exemplo de cisalhamento em um espaço bidimensional}
+\end{center}
+\end{figure}
+
+\subsubsection{Projeção}
+Projeção é o processo no qual se obtém uma figura bidimensional a partir de uma cena tridimensional.\cite{CGPPBook1}
+
+
+\begin{center}
+$\begin{bmatrix}x\\
+y\\
+z\\
+\frac{z}{d}
+\end{bmatrix}=\begin{bmatrix}1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & \frac{1}{d} & 0
+\end{bmatrix}\begin{bmatrix}x\\
+y\\
+z\\
+1
+\end{bmatrix}$\end{center}
+
+\begin{figure}[H] 
+\begin{center}
+\includegraphics[scale=0.25]{figuras/projection1.png}
+\caption{Exemplo de projeção}
+\end{center}
+\end{figure}
+
+
+\subsection{Tipos de transformação}
+É necessário primeiramente assumir que a função de transformação $F$ mapeia um conjunto de reais de tamanho $n$ em um outro conjunto de reais de tamanho $m$.
+Pode-se dividir basicamente as transformações em três tipos.
+\subsubsection{Linear}
+A transformação linear ou também chamada de euclidiana, pode ser definida como:
+\begin{center}
+$F(x)=Qx$\end{center}
+Sendo que $Q=n\times m$.
+Ou seja, transformações do tipo lineares são aquelas obtidas através de mutliplicações matriciais.
+Assim, através das transformações lineares pode-se realizar operações de rotação e translação.\cite{CGPPBook1}
+\subsubsection{Afim}
+A transformação Afim é uma transformação que compreende as operações que a transformação linear
+consegue executar mais as operações de cisalhamento e de variação de escala. A transformada em questão pode ser definida como:
+
+\begin{center}
+$F(x)=Qx+q$\end{center}
+Sendo que $Q=n\times m$ e $q$ é um escalar. \cite{CGPPBook1}
+
+\subsubsection{Projeção}
+
+A projeção é nada mais que uma transformação linear em um espaço projetivo.\cite{CGPPBook1}
+A forma geral da transformação projetiva é descrita como:
+
+$F(x)=\left( \frac{a_{11}x_{1}+a_{12}x_{2}+...+a_{1n}x_{n}+a_{1n}x_{1(n+1)}}{b_{1}x_{1}+b_{2}x_{2}+...+b_{n}x_{n}+b_{n+1}},\cdots,\right.$
+
+\begin{center}
+$\left. \frac{a_{m1}x_{1}+a_{m2}x_{2}+...+a_{mn}x_{n}+a_{mn}x_{m(n+1)}}{b_{1}x_{1}+b_{2}x_{2}+...+b_{n}x_{n}+b_{n+1}} \right)$\end{center}
+
+
+
+\section{Detecção de pontos de interesse}
+\PARstart Ponto de interesse é como é chamado qualquer ponto de uma imagem em que o sinal mude bidimensionalmente. Cantos ou ângulos
+no formato L, T e Y obecem essa definição assim como pontos pretos em um fundo branco, o final de ramificações ou qualquer textura bidimensional
+significante.\cite{Coderlia1}
+
+
+\subsection{Detector Moravec}
+O operador Moravec foi uma dos primeiros detectores de ponto de interesse a serem desenvolvidos, sendo descrito primeiramente 
+em 1977 por Hans Moravec.\cite{Moravec1}
+Esse operador é baseado na função de auto-correlação do signal. Ele compara as diferenças de nível de cinza entre a janela atual e de janelas 
+deslocadas em quatro direções paralelas à colunas e linhas. Se o mínimo dessas quatro diferenças é superior a um determinado limiar, então um ponto de interesse
+foi encontrado.\cite{Coderlia1}
+  
+O operador Moravec pode ser definido matemáticamente como:
+    \begin{center}$V_{1}=\frac{1}{p(q-1)}\sum_{i=-k}^k\sum_{j=-l}^{l-1}\bigl(g(i,j)-g(i,j+1)\bigr)^2$    \end{center}
+    \begin{center}$V_{2}=\frac{1}{(p-1)q}\sum_{i=-k}^{k-1}\sum_{j=-l}^l\bigl(g(i,j)-g(i+1,j)\bigr)^2$    \end{center}
+    \begin{center}$V_{3}=\frac{1}{(p-1)(q-1)}\sum_{i=-k}^{k-1}\sum_{j=-l}^{l-1}\bigl(g(i,j)-g(i+1,j+1)\bigr)^2$\end{center}
+    \begin{center}$V_{4}=\frac{1}{(p-1)(q-1)}\sum_{i=-k}^{k-1}\sum_{j=-l}^{l-1}\bigl(g(i,j+1)-g(i+1,j)\bigr)^2$\end{center}
+    \begin{center}$V = min(V1,V2,V3,V4)$\end{center}
+
+    Onde $p = 2k + 1$ e $q = 2l + 1$, sendo que $k\times l$ é o tamanho da janela utilizada. 
+
+
+\subsection{Fluxo Ótico}
+Fluxo ótico é a distribuição de velocidades aparentes do movimento de padrões de brilho em uma imagem.\cite{GibsonBook1}
+Assim, pode-se obter informações importantes a respeito da distribuição espacial dos objetos visualizados 
+e da taxa de mudança dessa distribuição. Discontinuidades do fluxo ótico podem ajudar a segmentar uma determinada imagem 
+em regiões que correspondem a diferentes a diferentes objetos.
+Esse conceito começou a ser estudado na década de 1940 e foi publicado primeiramente pelo psicólogo americano James Gibson.\cite{Gibson1} \cite{OF1}
+
+Um pixel tendo a localização $(x,y,t)$ com intensidade $I$ será movido em $\Delta x$,$\Delta y$ and $\Delta t$ entre os quadros de uma mesma imagem.
+Assim, chega-se a equação:
+
+\begin{center}
+$\frac{\partial I}{\partial x}\frac{\Delta x}{\Delta t}+\frac{\partial I}{\partial y}\frac{\Delta y}{\Delta t}+\frac{\partial I}{\partial t}\frac{\Delta t}{\Delta t} = 0 $\end{center}
+simplificando tem-se que,
+\begin{center}
+$\frac{\partial I}{\partial x}V_x+\frac{\partial I}{\partial y}V_y+\frac{\partial I}{\partial t} = 0$\end{center}
+Onde $V_x$ e $V_y$ são os componentes $x$ e $y$ do fluxo ótico.
 
 \section{ Fluxograma para gerar o Mosaico}
  A montagem do mosaico se baseia em duas classes do Terralib, o arquivo MMIOMatching recebe duas imagens e apresenta como resultado os pontos de controle da cena, que são representados através de dois vetores para calculo da função de transformação. Esses pontos localizados são acrescentados na imagem que é salva com outro nome.
@@ -97,34 +286,39 @@ Comparação do SIFT e dos algoritmos do Terralib
 \section{Conclusão}
 Conclusão aqui.
 
-\begin{thebibliography}{1}
+\bibliographystyle{IEEEbib}
+\bibliography{biblio}
 
-\bibitem{canhoto}
-A.~Canhoto, E.~H.~Shiguemori, M.~A.~P.~Domiciano, \emph{Image sequence processing applied to autonomous aerial navigation}. Signal and Image Processing Applications, 2009. Proceedings ... Kuala Lumpur, Malasia: IEEE,
-2009. p. 496-499.
+% \begin{thebibliography}{1}
+% 
+% \bibitem{canhoto}
+% A.~Canhoto, E.~H.~Shiguemori, M.~A.~P.~Domiciano, \emph{Image sequence processing applied to autonomous aerial navigation}. Signal and Image Processing Applications, 2009. Proceedings ... Kuala Lumpur, Malasia: IEEE,
+% 2009. p. 496-499.
+% 
+% \bibitem{goltz1}
+% G.~A.~M.~Goltz, E.~H.~Shiguemori, \emph{Aplicação do Algoritmo SIFT em Imagens de Navegação Autônoma}. In:
+% Workshop Anual de Pesquisa e Desenvolvimento do IEAv. São José dos Campos: IEAv, 2008. p. 35.
+% 
+% \bibitem{lowe}
+% David~G.~Lowe, \emph{Distinctive image features from scale-invariant keypoints}. International Journal of Computer Vision, 60, 2 (2004), pp. 91-110. Disponível em: <http://www.cs.ubc.ca/~lowe/papers/ijcv04.pdf>. Acesso em 20 de Dezembro de 2011.
+% 
+% \bibitem{vedaldi}
+% A.~Vedaldi, \emph{SIFT++: A Lightweight C++ implementation of SIFT}. Disponível em: <http://www.vlfeat.org/~vedaldi/code/siftpp.html>. Acesso em 20 de Dezembro de 2011.
+% 
+% \bibitem{gonzalez}
+% R.~C.~Gonzalez; R.~E.~Woods, \emph{Processamento de Imagens Digitais}. 3.~ed.\hskip 1em plus 0.5em minus 0.4em\relax São Paulo, Brasil: Edgard Blucher, 2010.
+% 
+% \bibitem{schowengerdt}
+% R.~A.~Schowengerdt, \emph{Remote Sensing: Models and Methods for Image Processing}. 2nd~ed.\hskip 1em plus 0.5em minus 0.4em\relax  Elsevier Inc, 2007.
+% 
+% \bibitem{jose}
+% C.~G.~José, E.~H.~Shiguemori, \emph{Processamento de imagens obtidas com diferentes ângulos de visada para aplicação na navegação autônoma}. Seminário Anual de Iniciação Científica e Pós-Graduação do IEAv, 4. Anais ... São José dos Campos, Brasil: IEAv, 2010. v. 1, p. 61-62.
+% 
+% \bibitem{goltz2}
+% G.~A.~M.~Goltz, \emph{Redes neurais artificiais em imagens para estimação da posição de um VANT}; São José dos Campos : INPE, 2011
+% 
+% \end{thebibliography}
 
-\bibitem{goltz1}
-G.~A.~M.~Goltz, E.~H.~Shiguemori, \emph{Aplicação do Algoritmo SIFT em Imagens de Navegação Autônoma}. In:
-Workshop Anual de Pesquisa e Desenvolvimento do IEAv. São José dos Campos: IEAv, 2008. p. 35.
 
-\bibitem{lowe}
-David~G.~Lowe, \emph{Distinctive image features from scale-invariant keypoints}. International Journal of Computer Vision, 60, 2 (2004), pp. 91-110. Disponível em: <http://www.cs.ubc.ca/~lowe/papers/ijcv04.pdf>. Acesso em 20 de Dezembro de 2011.
-
-\bibitem{vedaldi}
-A.~Vedaldi, \emph{SIFT++: A Lightweight C++ implementation of SIFT}. Disponível em: <http://www.vlfeat.org/~vedaldi/code/siftpp.html>. Acesso em 20 de Dezembro de 2011.
-
-\bibitem{gonzalez}
-R.~C.~Gonzalez; R.~E.~Woods, \emph{Processamento de Imagens Digitais}. 3.~ed.\hskip 1em plus 0.5em minus 0.4em\relax São Paulo, Brasil: Edgard Blucher, 2010.
-
-\bibitem{schowengerdt}
-R.~A.~Schowengerdt, \emph{Remote Sensing: Models and Methods for Image Processing}. 2nd~ed.\hskip 1em plus 0.5em minus 0.4em\relax  Elsevier Inc, 2007.
-
-\bibitem{jose}
-C.~G.~José, E.~H.~Shiguemori, \emph{Processamento de imagens obtidas com diferentes ângulos de visada para aplicação na navegação autônoma}. Seminário Anual de Iniciação Científica e Pós-Graduação do IEAv, 4. Anais ... São José dos Campos, Brasil: IEAv, 2010. v. 1, p. 61-62.
-
-\bibitem{goltz2}
-G.~A.~M.~Goltz, \emph{Redes neurais artificiais em imagens para estimação da posição de um VANT}; São José dos Campos : INPE, 2011
-
-\end{thebibliography}
 
 \end{document}
