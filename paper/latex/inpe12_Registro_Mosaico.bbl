@@ -1,4 +1,26 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
+
+\bibitem{Canhoto}
+M.~A.~P.~Domiciano A.~Canhoto, E.~H.~Shiguemori,
+\newblock ``Image sequence processing applied to autonomous aerial
+  navigation,''
+\newblock {\em Signal and Image Processing Applications}, 2009.
+
+\bibitem{Goltz1}
+E.~H.~Shiguemori G.~A.~M.~Goltz,
+\newblock ``Aplicação do algoritmo sift em imagens de navegação
+  autônoma,''
+\newblock {\em Workshop Anual de Pesquisa e Desenvolvimento do IEAv}, 2008.
+
+\bibitem{Lowe}
+David~G. Lowe,
+\newblock ``Distinctive image features from scale-invariant keypoints,''
+\newblock {\em International Journal of Computer Vision}, 2004.
+
+\bibitem{Vedaldi}
+A.~Vedaldi,
+\newblock ``Sift++: A lightweight c++ implementation of sift,''
+  \url{http://www.vlfeat.org/~vedaldi/code/siftpp.html}, 2011.
 
 \bibitem{CGPPBook1}
 {\em Computer Graphics: Principles and Practice 2nd Edition in C},

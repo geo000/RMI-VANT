@@ -1,4 +1,4 @@
-This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2011.12.15)  16 JAN 2012 16:12
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2011.12.15)  18 JAN 2012 15:33
 entering extended mode
  %&-line parsing enabled.
 **inpe12_Registro_Mosaico.tex
@@ -212,31 +212,19 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/it' in size <8> not available
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <9> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 60.
 
-
-LaTeX Warning: Citation `canhoto' on page 1 undefined on input line 60.
-
-
-LaTeX Warning: Citation `goltz1' on page 1 undefined on input line 64.
-
-
-LaTeX Warning: Citation `lowe' on page 1 undefined on input line 64.
-
 <figuras/plano_voo.png, id=1, 440.847pt x 404.712pt>
 File: figuras/plano_voo.png Graphic file (type png)
 
 <use figuras/plano_voo.png>
-Overfull \hbox (0.94499pt too wide) in paragraph at lines 68--69
+Overfull \hbox (0.94499pt too wide) in paragraph at lines 81--82
  [][] 
  []
-
-
-LaTeX Warning: Citation `vedaldi' on page 1 undefined on input line 75.
 
 [1{/usr/share/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
  <./figuras/plano_voo.png (PNG copy)>]
-** ATTENTION: \PARstart is deprecated (line 88). Use \IEEEPARstart instead.
+** ATTENTION: \PARstart is deprecated (line 110). Use \IEEEPARstart instead.
 <figuras/translation1.png, id=10, 694.7556pt x 548.7702pt>
 File: figuras/translation1.png Graphic file (type png)
 
@@ -248,7 +236,7 @@ File: figuras/scale1.png Graphic file (type png)
 File: figuras/rotation1.png Graphic file (type png)
 
 <use figuras/rotation1.png>
-Underfull \hbox (badness 1902) in paragraph at lines 157--159
+Underfull \hbox (badness 1902) in paragraph at lines 179--181
  \T1/ptm/m/it/9 4) Cisal-hamento: [][] \T1/ptm/m/n/9 O cisal-hamento re-sulta e
 m um movi-mento
  []
@@ -263,31 +251,28 @@ File: figuras/projection1.png Graphic file (type png)
 
  <./figuras/translation1.png> <./figuras/scale1.png> <./figuras/rotation1.png> 
 <./figuras/shear1.png> <./figuras/projection1.png>]
-** ATTENTION: \PARstart is deprecated (line 238). Use \IEEEPARstart instead.
-(./inpe12_Registro_Mosaico.bbl) [3] (./inpe12_Registro_Mosaico.aux)
-
-LaTeX Warning: There were undefined references.
-
- ) 
+** ATTENTION: \PARstart is deprecated (line 260). Use \IEEEPARstart instead.
+(./inpe12_Registro_Mosaico.bbl) [3] (./inpe12_Registro_Mosaico.aux) ) 
 Here is how much of TeX's memory you used:
- 3240 strings out of 256216
- 43355 string characters out of 1917071
- 102919 words of memory out of 1500000
+ 3239 strings out of 256216
+ 43349 string characters out of 1917071
+ 103932 words of memory out of 1500000
  6490 multiletter control sequences out of 10000+200000
- 49708 words of font info for 58 fonts, out of 1200000 for 2000
+ 48601 words of font info for 57 fonts, out of 1200000 for 2000
  647 hyphenation exceptions out of 8191
- 32i,10n,24p,917b,650s stack positions out of 5000i,500n,6000p,200000b,15000s
-{/usr/share/texmf/fonts/enc/dvips/base/8r.enc}</usr/share/texmf/fonts/type1/b
-luesky/cm/cmmi5.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmmi6.pfb></usr/sh
-are/texmf/fonts/type1/bluesky/cm/cmmi9.pfb></usr/share/texmf/fonts/type1/bluesk
-y/cm/cmr5.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmr6.pfb></usr/share/tex
-mf/fonts/type1/bluesky/cm/cmr9.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cms
-y6.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmsy8.pfb></usr/share/texmf/fon
-ts/type1/bluesky/cm/cmsy9.pfb></usr/share/texmf/fonts/type1/public/cmex/fmex9.p
-fb></usr/share/texmf/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf/fonts/t
-ype1/urw/times/utmbi8a.pfb></usr/share/texmf/fonts/type1/urw/times/utmr8a.pfb><
-/usr/share/texmf/fonts/type1/urw/times/utmri8a.pfb>
-Output written on inpe12_Registro_Mosaico.pdf (3 pages, 1089473 bytes).
+ 32i,10n,24p,540b,650s stack positions out of 5000i,500n,6000p,200000b,15000s
+{/usr/shar
+e/texmf/fonts/enc/dvips/base/8r.enc}</usr/share/texmf/fonts/type1/bluesky/cm/cm
+mi5.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmmi6.pfb></usr/share/texmf/fo
+nts/type1/bluesky/cm/cmmi9.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmr5.pf
+b></usr/share/texmf/fonts/type1/bluesky/cm/cmr6.pfb></usr/share/texmf/fonts/typ
+e1/bluesky/cm/cmr9.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmsy6.pfb></usr
+/share/texmf/fonts/type1/bluesky/cm/cmsy8.pfb></usr/share/texmf/fonts/type1/blu
+esky/cm/cmsy9.pfb></usr/share/texmf/fonts/type1/public/cmex/fmex9.pfb></usr/sha
+re/texmf/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf/fonts/type1/urw/tim
+es/utmbi8a.pfb></usr/share/texmf/fonts/type1/urw/times/utmr8a.pfb></usr/share/t
+exmf/fonts/type1/urw/times/utmri8a.pfb>
+Output written on inpe12_Registro_Mosaico.pdf (3 pages, 1090172 bytes).
 PDF statistics:
  80 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 131072)
