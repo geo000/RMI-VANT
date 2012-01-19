@@ -106,6 +106,12 @@ por esta função.
 
 \clearpage
 
+\section{TerraLib}
+TerraLib é uma biblioteca \textit{open source} de classes e funções SIG disponível na Internet, possibilitando portanto um ambiente colaborativo e seu uso
+para o desenvolvimento de novas ferramentas. Assim, deseja-se possibilitar uma nova geração de aplicações SIG baseada nos avanços tecnológicos dos bancos de dados espaciais.
+A TerraLib é desenvolvida pela DPI divisão pertencente ao INPE, Tecgraf, PUC-Rio e FUNCATE.
+
+
 \section{Transformadas Geométricas}
 \PARstart Transformação geométrica é o nome que se dá à aplicação de uma determinada função matemática em uma determinada figura geométrica 
 em que o resultado é geometricamente igual ou semelhante à figura original.
@@ -296,8 +302,11 @@ simplificando tem-se que,
 $\frac{\partial I}{\partial x}V_x+\frac{\partial I}{\partial y}V_y+\frac{\partial I}{\partial t} = 0$\end{center}
 Onde $V_x$ e $V_y$ são os componentes $x$ e $y$ do fluxo ótico.
 
+\subsection{TerraLib}
+Os algoritmos descritos acima são utilizados por duas classes do TerraLib: \texttt{TePDIMMIOMatching} utiliza o operador Moravec e \texttt{TePDIOFMatching} utiliza o fluxo ótico.
+
 \section{ Fluxograma para gerar o Mosaico}
- A montagem do mosaico se baseia em duas classes do Terralib, o arquivo MMIOMatching recebe duas imagens e apresenta como resultado os pontos de controle da cena, que são representados através de dois vetores para calculo da função de transformação. Esses pontos localizados são acrescentados na imagem que é salva com outro nome.
+ A montagem do mosaico se baseia em duas classes do TerraLib, o arquivo MMIOMatching recebe duas imagens e apresenta como resultado os pontos de controle da cena, que são representados através de dois vetores para calculo da função de transformação. Esses pontos localizados são acrescentados na imagem que é salva com outro nome.
 (Talvez colocar algo da dissetação do Dmitri Fedorov)
  Já o segundo arquivo  Mosaic recebe como entrada  a saida do  arquivo MMIOMatching, ou seja, os vetores  que representam os pontos de controle, além das imagens que serão mosaicadas e o nome da nova imagem.
 (Devemos definir as configurações nesse item, qual foi a função de transformação que usamos entre outros detalhes, seria interessante fazer um desenho com explicando esse clico)
@@ -306,7 +315,7 @@ Onde $V_x$ e $V_y$ são os componentes $x$ e $y$ do fluxo ótico.
 Devemos descrever quanto tempo levou para executar, quantas imagens foram utilizadas para gerar o mosaico, quais as vantagens. 
 
 \section{Comparação dos algoritmos}
-Comparação do SIFT e dos algoritmos do Terralib
+Comparação do SIFT e dos algoritmos do TerraLib
 
 \section{Conclusão}
 Conclusão aqui.
