@@ -107,15 +107,9 @@ por esta função.
 \clearpage
 
 \section{TerraLib}
-TerraLib is a GIS classes and functions library, available from the Internet as open source, 
-allowing a collaborative environment and its use for the development of multiple GIS tools. 
-Its main aim is to enable the development of a new generation of GIS applications, based on the technological advances on spatial databases. 
-TerraLib is a free software.
-
-TerraLib is being developed by DPI (Image Processing Division) at INPE (National Institute for Space Research), Tecgraf , the Computer Graphics Technology Group of PUC-Rio (the Pontifical Catholic University of Rio de Janeiro in Brazil) and FUNCATE (Foundation for the Space Science, Applied Research and Technology). 
-
-TerraLib é uma biblioteca \textit{open source} de classes e funções \textit{GIS} disponível na Internet, possibilitando portanto um ambiente colaborativo e seu uso
-para o desenvolvimento de novas ferramentas. Assim, deseja-se possibilitar uma nova geração de aplicações \textit{GIS}
+TerraLib é uma biblioteca \textit{open source} de classes e funções SIG disponível na Internet, possibilitando portanto um ambiente colaborativo e seu uso
+para o desenvolvimento de novas ferramentas. Assim, deseja-se possibilitar uma nova geração de aplicações SIG baseada nos avanços tecnológicos dos bancos de dados espaciais.
+A TerraLib é desenvolvida pela DPI, divisão pertencente ao INPE, Tecgraf, PUC-Rio e FUNCATE.
 
 
 \section{Transformadas Geométricas}
