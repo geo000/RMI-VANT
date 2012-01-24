@@ -46,6 +46,7 @@
 \maketitle               
 \renewcommand\abstractname{Resumo}
 \renewcommand{\refname}{Referências}
+\renewcommand\IEEEkeywordsname{Palavras-chave}
 
 
 \begin{abstract}
@@ -72,13 +73,13 @@ e isso também gera distorções que buscamos resolver neste trabalho.
 Na Figura~\ref{fig:plano_voo} pode-se observar o exemplo de um plano de voo para um VANT. 
 As imagens adquiridas pela câmera digital não possuem georeferenciamento e são coletadas a cada um segundo. 
 Após o término da aquisição das imagens, as mesmas necessitam ser mosaicadas. 
-O procedimento inicial para essa tarefa é o registro de imagens, que inicia a busca por correspondências entre imagens diferentes que representam a mesma cena \cite{Goltz1}. 
+O procedimento inicial para essa tarefa é o registro de imagens, que inicia a busca por correspondências entre imagens diferentes que representam a mesma cena \cite{Goltz:08}. 
 Neste trabalho, a busca por correspondências entre pontos de imagens diferentes é realizada e comparada entre os algoritmos: SIFT proposto por \cite{Lowe} 
 e pelos algoritmos de registro implementados na biblioteca TerraLib.
 
 \begin{figure}[h!t]
   \centering
-  \includegraphics[width=3.5in]{figuras/plano_voo.png}
+  \includegraphics[width=3.5in]{figuras/plano_voo}
   \caption{Exemplo de Plano de Voo do VANT}
   \label{fig:plano_voo}
 \end{figure}
@@ -133,7 +134,7 @@ Onde $t_{x}~~ \textrm{e} ~~ t_{y}$ são respectivamente as taxas de translação
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.25]{figuras/translation1.png}
+\includegraphics[scale=0.25]{figuras/translation1}
 \caption{Exemplo de translação em um espaço bidimensional}
 \end{center}
 \end{figure}
@@ -155,7 +156,7 @@ Onde $v_{x}~~ \textrm{e} ~~ v_{y}$ são respectivamente as taxas de escala no ei
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.25]{figuras/scale1.png}
+\includegraphics[scale=0.25]{figuras/scale1}
 \caption{Exemplo de variação de escala em um espaço bidimensional}
 \end{center}
 \end{figure}
@@ -176,7 +177,7 @@ Onde $\theta$ é o ângulo que a figura será rotacionada em relação a posiç�
 
 \begin{figure}[H] 
 \begin{center}
-\includegraphics[scale=0.25]{figuras/rotation1.png}
+\includegraphics[scale=0.25]{figuras/rotation1}
 \caption{Exemplo de rotação em um espaço bidimensional}
 \end{center}
 \end{figure}
@@ -197,7 +198,7 @@ Onde $c$ é o coeficiente de cisalhamento.\cite{CGPPBook1}
 
 \begin{figure}[H] 
 \begin{center}
-\includegraphics[scale=0.25]{figuras/shear1.png}
+\includegraphics[scale=0.25]{figuras/shear1}
 \caption{Exemplo de cisalhamento em um espaço bidimensional}
 \end{center}
 \end{figure}
@@ -223,7 +224,7 @@ z\\
 
 \begin{figure}[H] 
 \begin{center}
-\includegraphics[scale=0.25]{figuras/projection1.png}
+\includegraphics[scale=0.25]{figuras/projection1}
 \caption{Exemplo de projeção}
 \end{center}
 \end{figure}
@@ -320,7 +321,7 @@ Comparação do SIFT e dos algoritmos do TerraLib
 \section{Conclusão}
 Conclusão aqui.
 
-\bibliographystyle{IEEEbib}
+\bibliographystyle{IEEEtran}
 \bibliography{biblio}
 
 % \begin{thebibliography}{1}
