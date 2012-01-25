@@ -62,7 +62,7 @@ Registro de Imagens, Mosaico, VANT, TerraLib, SIFT.
 tais como ausência de tripulação em tarefas tediosas, cansativas ou que envolvem riscos à tripulação, 
 baixo custo operacional e de fabricação comparados às aeronaves convencionais, entre outros. 
 Imagens aéreas obtidas através de VANTs possuem grandes aplicabilidades \cite{Canhoto}
- e o objetivo geral deste trabalho é encontrar solução para distorções geométricas no mosaico de imagens adquiridas por câmera digital a bordo de aeronaves não tripuladas.
+ e o objetivo geral deste trabalho é encontrar solução para distorções geométricas que surgem ao realizar registro e mosaico de imagens adquiridas por câmera digital a bordo de aeronaves não tripuladas.
 
 O mosaico de sequências de imagens aéreas apresenta alguns problemas de distorções geométricas devido às variações de altitudes da aeronave e 
 distorções devido as diferenças de escala, projeção e ângulo de visada em cenas de baixa altitude e que apresentam prédios e montanhas. 
@@ -71,7 +71,7 @@ Outro problema também enfrentado ao mosaicar esse tipo de imagem,
 e isso também gera distorções que buscamos resolver neste trabalho.
 
 Na Figura~\ref{fig:plano_voo} pode-se observar o exemplo de um plano de voo para um VANT. 
-As imagens adquiridas pela câmera digital não possuem georeferenciamento e são coletadas a cada um segundo. 
+Neste trabalho, as imagens adquiridas pela câmera digital a bordo da aeronave não possuem georeferenciamento e são coletadas a cada um segundo. 
 Após o término da aquisição das imagens, as mesmas necessitam ser mosaicadas. 
 O procedimento inicial para essa tarefa é o registro de imagens, que inicia a busca por correspondências entre imagens diferentes que representam a mesma cena \cite{Goltz:08}. 
 Neste trabalho, a busca por correspondências entre pontos de imagens diferentes é realizada e comparada entre os algoritmos: SIFT proposto por \cite{Lowe} 
@@ -79,42 +79,29 @@ e pelos algoritmos de registro implementados na biblioteca TerraLib.
 
 \begin{figure}[h!t]
   \centering
-  \includegraphics[width=3.5in]{figuras/plano_voo}
+  \includegraphics[width=3.3in]{figuras/plano_voo}
   \caption{Exemplo de Plano de Voo do VANT}
   \label{fig:plano_voo}
 \end{figure}
 
-\section{Algoritmo SIFT}
+\section{Registro e Mosaico de Imagens}
+O registro de imagens pode ser entendido como um processo de casamento entre duas imagens que possuem uma área comum. A imagem tomada como base de registro é chamada de imagem de referência, e a imagem a ser registrada é chamada de imagem de ajuste. O processo basicamente envolve três etapas:
+\begin{enumerate}
+	\item Obtenção de Pontos de Controle;
+	\begin{enumerate}
+		\item Extração de feições;
+		\item Casamento das feições extraídas;
+	\end{enumerate}
+	\item Determinação da função de Transformação;
+	\item Sobreposição das imagens.
+\end{enumerate}
 
-O algoritmo SIFT - Scale Invariant Feature Transform foi desenvolvido por [1] em 1999 e sua função é construir descritores de pontos-chaves de uma imagem,
- sendo este descritores independentes das mudanças de escala, rotação, translação e luminosidade que uma imagem pode sofrer.
-Utilizamos neste trabalho a implementação em C++ obtida em \cite{Vedaldi}.
-O SIFT é utilizado na busca por correspondências entre sequência de imagens diferentes que contenham partes da mesma cena. 
-A busca é feita através de pontos-chave correspondentes, utilizando-se seus descritores. 
-Nesta pesquisa a distância euclidiana é utilizada em três abordagens diferentes para avaliar a mais apropriada para imagens obtidas por VANTs. 
-Os algoritmos de cada abordagem são: DistEuclidConvencional, o qual aplica a função de busca diretamente, sem tratar seus resultados. 
-DistEuclidRedundante, que chama a função de busca duas vezes, a segunda chamada é feita invertendo-se os parâmetros da função, 
-somente correspondências que ocorram em ambas são guardadas. 
-DistEuclidEsc onde observa-se a continuidade de escala entre segmentos de reta traçados entre os pontos pertencentes e às correspondências geradas 
-por esta função.
+As imagens a serem registradas podem ser relacionadas atavés de função de transformação simples se a geometria das imagens for semelhante. Se a geometria das imagens for diferente, as transformações podem ser aproximadas utilizando um função polinomial cujos parâmetros são determinados a partir das coordenadas dos pontos de controle. O número de pontos de controle representa a situação de um sistema de equações determinado. Entretanto, como as coordenadas medidas dos pontos de controle estão sujeitas a erros, convém usar um número de pontos maior que o número mínimo, o que define um sistema de equações sobredeterminado.
 
-% \begin{figure}[!t]
-%  \centering
-%  \includegraphics[width=3.5in]{figuras/fluxograma}
-%  \caption{Fluxograma do Programa}
-%  \label{fig:fluxograma}
-% \end{figure}
-
-\clearpage
-
-\section{TerraLib}
-\PARstart TerraLib é uma biblioteca \textit{open source} de classes e funções SIG disponível na Internet, possibilitando portanto um ambiente colaborativo e seu uso
-para o desenvolvimento de novas ferramentas. Assim, deseja-se possibilitar uma nova geração de aplicações SIG baseada nos avanços tecnológicos dos bancos de dados espaciais.
-A TerraLib é desenvolvida pela DPI, divisão pertencente ao INPE, Tecgraf, PUC-Rio e FUNCATE.\cite{Terralib1}
-
+Mosaico é um produto gerado a partir de técnicas de registro de imagens. É uma composição de imagens adquiridas de diferentes pontos de vista para contruir uma imagem maior, dando uma visão global da cena.
 
 \section{Transformadas Geométricas}
-\PARstart Transformação geométrica é o nome que se dá à aplicação de uma determinada função matemática em uma determinada figura geométrica 
+Transformação geométrica é o nome que se dá à aplicação de uma determinada função matemática em uma determinada figura geométrica 
 em que o resultado é geometricamente igual ou semelhante à figura original.
 
 \subsection{Transformações elementares}
@@ -161,7 +148,6 @@ Onde $v_{x}~~ \textrm{e} ~~ v_{y}$ são respectivamente as taxas de escala no ei
 \end{center}
 \end{figure}
 
-
 \subsubsection{Rotação}
 Na rotação rotaciona-se a figura em torno de um determinado eixo.
 
@@ -183,8 +169,7 @@ Onde $\theta$ é o ângulo que a figura será rotacionada em relação a posiç�
 \end{figure}
 
 \subsubsection{Cisalhamento}
-O cisalhamento resulta em um movimento translacional na direção de um eixo no qual a magnitude
-aumenta ao longo do outro eixo.
+O cisalhamento resulta em um movimento translacional na direção de um eixo no qual a magnitude aumenta ao longo do outro eixo.
 
 \begin{center}
 $\begin{bmatrix}x'\\
@@ -229,7 +214,6 @@ z\\
 \end{center}
 \end{figure}
 
-
 \subsection{Tipos de transformação}
 É necessário primeiramente 
 \subsubsection{Linear}
@@ -239,8 +223,6 @@ $F(x)=Qx$\end{center}
 Sendo que $Q=n\times m$.
 Ou seja, transformações do tipo lineares são aquelas obtidas através de mutliplicações matriciais.
 Assim, através das transformações lineares pode-se realizar operações de rotação, cisalhamento e variação de escala.\cite{CGPPBook1}
-
-
 \subsubsection{Afim}
 A transformação Afim é uma transformação que compreende as operações que a transformação linear
 consegue executar mais a operação de translação. A transformada em questão pode ser definida como:
@@ -249,13 +231,12 @@ consegue executar mais a operação de translação. A transformada em questão 
 $F(x)=Qx+q$\end{center}
 Sendo que $Q=n\times m$ e $q$ tem tamanho $m$. \cite{CGPPBook1}
 
-
 \subsubsection{Polinômio Segundo Grau}
 
 $F(x)=a_{0}+a_{1}x+a_{2}y+a_{3}xy+a_{4}x^{2}+a_{5}y^{2}$
 
-
 \subsubsection{Projeção}
+
 A projeção é nada mais que uma transformação linear em um espaço projetivo.\cite{CGPPBook1}
 A forma geral da transformação projetiva é descrita como:
 
@@ -264,13 +245,10 @@ $F(x)=\left( \frac{a_{11}x_{1}+a_{12}x_{2}+...+a_{1n}x_{n}+a_{1n}x_{1(n+1)}}{b_{
 \begin{center}
 $\left. \frac{a_{m1}x_{1}+a_{m2}x_{2}+...+a_{mn}x_{n}+a_{mn}x_{m(n+1)}}{b_{1}x_{1}+b_{2}x_{2}+...+b_{n}x_{n}+b_{n+1}} \right)$\end{center}
 
-
-
 \section{Detecção de pontos de interesse}
-\PARstart Ponto de interesse é como é chamado qualquer ponto de uma imagem em que o sinal mude bidimensionalmente. Cantos ou ângulos
+Ponto de interesse é como é chamado qualquer ponto de uma imagem em que o sinal mude bidimensionalmente. Cantos ou ângulos
 no formato L, T e Y obecem essa definição assim como pontos pretos em um fundo branco, o final de ramificações ou qualquer textura bidimensional
 significante.\cite{Coderlia1}
-
 
 \subsection{Detector Moravec}
 O operador Moravec foi uma dos primeiros detectores de ponto de interesse a serem desenvolvidos, sendo descrito primeiramente 
@@ -288,13 +266,11 @@ O operador Moravec pode ser definido matematicamente como:
 
     Onde $p = 2k + 1$ e $q = 2l + 1$, sendo que $k\times l$ é o tamanho da janela utilizada. 
 
-
 \subsection{Fluxo Ótico}
-Fluxo ótico é a distribuição de velocidades aparentes do movimento de padrões de brilho em uma imagem.\cite{GibsonBook1}
-Assim, pode-se obter informações importantes a respeito da distribuição espacial dos objetos visualizados 
+Fluxo ótico é a distribuição de velocidades aparentes do movimento de padrões de brilho em uma imagem \cite{GibsonBook1}. Assim, pode-se obter informações importantes a respeito da distribuição espacial dos objetos visualizados 
 e da taxa de mudança dessa distribuição. Discontinuidades do fluxo ótico podem ajudar a segmentar uma determinada imagem 
 em regiões que correspondem a diferentes a diferentes objetos.
-Esse conceito começou a ser estudado na década de 1940 e foi publicado primeiramente pelo psicólogo americano James Gibson.\cite{Gibson1} \cite{OF1}
+Esse conceito começou a ser estudado na década de 1940 e foi publicado primeiramente pelo psicólogo americano James Gibson \cite{Gibson1} \cite{OF1}.
 
 Um pixel tendo a localização $(x,y,t)$ com intensidade $I$ será movido em $\Delta x$,$\Delta y$ and $\Delta t$ entre os quadros de uma mesma imagem.
 Assim, chega-se a equação:
@@ -306,15 +282,40 @@ simplificando tem-se que,
 $\frac{\partial I}{\partial x}V_x+\frac{\partial I}{\partial y}V_y+\frac{\partial I}{\partial t} = 0$\end{center}
 Onde $V_x$ e $V_y$ são os componentes $x$ e $y$ do fluxo ótico.
 
-\subsection{TerraLib}
-Os algoritmos descritos acima são utilizados por duas classes do TerraLib: \texttt{TePDIMMIOMatching} utiliza o operador Moravec e \texttt{TePDIOFMatching} utiliza o fluxo ótico.
-\section{Mosaico}
+\section{Avaliação da Precisão do Registro}
+Uma operação importante para um sistema de registro é a avaliação da transformação computada. Sejam {g} e {G} as imagens de ajuste e referência respectivamente, e {x, y} e {X, Y} os conjuntos de pontos de controle casados que definem uma transformação de distorção {T}. Podemos verificar o quão a transformação é correta através do cálculo do erro RMSE.
 
-\cite{Leila1}\cite{Zhao1}
-\begin{center}
-$R(i,j)=\frac{\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}W_{z}(l,m)\cdot S_{ij}(l,m)}{\sqrt{\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}W_{z}^{2}(l,m)\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}S_{ij}^{2}(l,m)}}$\end{center}
+$$
+	RMSE = \sqrt{\frac{1}{n}\sum\limits_{i=1}^{n}(x_i - T(X_i))^2 + (y_i - T(Y_i))^2}
+$$
 
-\subsection{ Fluxograma para gerar o Mosaico}
+onde:
+
+$(x_i, y_i), (X_i, Y_i)$, $i = 1..n$ é o conjunto de pares de pontos de contole obtidos no processo de casamento.
+$T$ é a função de distorção entre as imagens obtida através do casamento de pontos de controle.
+
+\section{TerraLib}
+TerraLib é uma biblioteca \textit{open source} de classes e funções SIG disponível na Internet, possibilitando portanto um ambiente colaborativo e seu uso
+para o desenvolvimento de novas ferramentas. Assim, deseja-se possibilitar uma nova geração de aplicações SIG baseada nos avanços tecnológicos dos bancos de dados espaciais.
+A TerraLib é desenvolvida pela DPI, divisão pertencente ao INPE, Tecgraf, PUC-Rio e FUNCATE.
+
+Os algoritmos descritos anteriormente são utilizados por duas classes do TerraLib: \texttt{TePDIMMIOMatching} utiliza o operador Moravec e \texttt{TePDIOFMatching} utiliza o fluxo ótico.
+
+\section{Algoritmo SIFT}
+
+O algoritmo SIFT - Scale Invariant Feature Transform foi desenvolvido por [1] em 1999 e sua função é construir descritores de pontos-chaves de uma imagem,
+ sendo este descritores independentes das mudanças de escala, rotação, translação e luminosidade que uma imagem pode sofrer.
+Utilizamos neste trabalho a implementação em C++ obtida em \cite{Vedaldi}.
+O SIFT é utilizado na busca por correspondências entre sequência de imagens diferentes que contenham partes da mesma cena. 
+A busca é feita através de pontos-chave correspondentes, utilizando-se seus descritores. 
+Nesta pesquisa a distância euclidiana é utilizada em três abordagens diferentes para avaliar a mais apropriada para imagens obtidas por VANTs. 
+Os algoritmos de cada abordagem são: DistEuclidConvencional, o qual aplica a função de busca diretamente, sem tratar seus resultados. 
+DistEuclidRedundante, que chama a função de busca duas vezes, a segunda chamada é feita invertendo-se os parâmetros da função, 
+somente correspondências que ocorram em ambas são guardadas. 
+DistEuclidEsc onde observa-se a continuidade de escala entre segmentos de reta traçados entre os pontos pertencentes e às correspondências geradas 
+por esta função.
+
+\section{ Fluxograma para gerar o Mosaico}
  A montagem do mosaico se baseia em duas classes do TerraLib, o arquivo MMIOMatching recebe duas imagens e apresenta como resultado os pontos de controle da cena, que são representados através de dois vetores para calculo da função de transformação. Esses pontos localizados são acrescentados na imagem que é salva com outro nome.
 (Talvez colocar algo da dissetação do Dmitri Fedorov)
  Já o segundo arquivo  Mosaic recebe como entrada  a saida do  arquivo MMIOMatching, ou seja, os vetores  que representam os pontos de controle, além das imagens que serão mosaicadas e o nome da nova imagem.
@@ -331,108 +332,5 @@ Conclusão aqui.
 
 \bibliographystyle{IEEEtran}
 \bibliography{biblio}
-
-% \begin{thebibliography}{1}
-% 
-% \bibitem{canhoto}
-% , \emph{Image sequence processing applied to autonomous aerial navigation}. Signal and Image Processing Applications, 2009. Proceedings ... Kuala Lumpur, Malasia: IEEE,
-% 2009. p. 496-499.
-%  @Article{canhoto,
-%  author = {A.~Canhoto, E.~H.~Shiguemori, M.~A.~P.~Domiciano},
-%  title = {Image sequence processing applied to autonomous aerial navigation},
-%  journal = {Signal and Image Processing Applications},
-%  year = {2009},
-% 
-% }
-% 
-% % \bibitem{goltz1}
-% % G.~A.~M.~Goltz, E.~H.~Shiguemori, \emph{Aplicação do Algoritmo SIFT em Imagens de Navegação Autônoma}. In:
-% % Workshop Anual de Pesquisa e Desenvolvimento do IEAv. São José dos Campos: IEAv, 2008. p. 35.
-% % 
-% @Article{goltz1,
-%  author = {G.~A.~M.~Goltz, E.~H.~Shiguemori,},
-%  title = {Aplicação do Algoritmo SIFT em Imagens de Navegação Autônoma},
-%  journal = {Workshop Anual de Pesquisa e Desenvolvimento do IEAv},
-%  year = {2008},
-% 
-% }
-% 
-% 
-% % \bibitem{lowe}
-% % David~G.~Lowe, \emph{Distinctive image features from scale-invariant keypoints}. International Journal of Computer Vision, 60, 2 (2004), pp. 91-110. Disponível em: <http://www.cs.ubc.ca/~lowe/papers/ijcv04.pdf>. Acesso em 20 de Dezembro de 2011.
-% % 
-% @Article{lowe,
-%  author = {David~G.~Lowe},
-%  title = {Distinctive image features from scale-invariant keypoints},
-%  journal = {International Journal of Computer Vision},
-%  year = {2004},
-% 
-% }
-% 
-% 
-% % \bibitem{vedaldi}
-% % A.~Vedaldi, \emph{SIFT++: A Lightweight C++ implementation of SIFT}. Disponível em: <http://www.vlfeat.org/~vedaldi/code/siftpp.html>. Acesso em 20 de Dezembro de 2011.
-% % 
-% 
-% @misc{vedaldi,
-% author = {A.~Vedaldi},
-% title = {SIFT++: A Lightweight C++ implementation of SIFT},
-% month = Dezembro,
-% year = {2011},
-% howpublished={\url{http://www.vlfeat.org/~vedaldi/code/siftpp.html}}
-% }
-% 
-% % \bibitem{gonzalez}
-% % R.~C.~Gonzalez; R.~E.~Woods, \emph{Processamento de Imagens Digitais}. 3.~ed.\hskip 1em plus 0.5em minus 0.4em\relax São Paulo, Brasil: Edgard Blucher, 2010.
-% % 
-% @Book{gonzalez,
-%  title = {Processamento de Imagens Digitais},
-%  publisher = {Edgard Blucher},
-%  year = {2010},
-%  ALTauthor = {R.~C.~Gonzalez; R.~E.~Woods},
-% 
-% }
-% 
-% 
-% 
-% % \bibitem{schowengerdt}
-% % R.~A.~Schowengerdt, \emph{Remote Sensing: Models and Methods for Image Processing}. 2nd~ed.\hskip 1em plus 0.5em minus 0.4em\relax  Elsevier Inc, 2007.
-% % 
-% @Book{schowengerdt,
-%  title = {Remote Sensing: Models and Methods for Image Processing},
-%  publisher = {Elsevier Inc},
-%  year = {2007},
-%  ALTauthor = {R.~A.~Schowengerdt},
-% 
-% }
-% 
-% % \bibitem{jose}
-% % C.~G.~José, E.~H.~Shiguemori, \emph{Processamento de imagens obtidas com diferentes ângulos de visada para aplicação na navegação autônoma}. Seminário Anual de Iniciação Científica e Pós-Graduação do IEAv, 4. Anais ... São José dos Campos, Brasil: IEAv, 2010. v. 1, p. 61-62.
-% % 
-% 
-% @Article{jose,
-%  author = {C.~G.~José, E.~H.~Shiguemori},
-%  title = {Processamento de imagens obtidas com diferentes ângulos de visada para aplicação na navegação autônoma},
-%  journal = {Seminário Anual de Iniciação Científica e Pós-Graduação do IEAv},
-%  year = {2010},
-% 
-% }
-% 
-% 
-% % \bibitem{goltz2}
-% % G.~A.~M.~Goltz, \emph{Redes neurais artificiais em imagens para estimação da posição de um VANT}; São José dos Campos : INPE, 2011
-% % 
-% @Article{goltz2,
-%  author = {G.~A.~M.~Goltz},
-%  title = {Redes neurais artificiais em imagens para estimação da posição de um VANT},
-%  journal = {INPE},
-%  year = {2011},
-% 
-% }
-
-
-% \end{thebibliography}
-
-
 
 \end{document}
