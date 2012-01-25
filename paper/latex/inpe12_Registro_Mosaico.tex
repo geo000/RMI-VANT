@@ -108,9 +108,9 @@ por esta função.
 \clearpage
 
 \section{TerraLib}
-TerraLib é uma biblioteca \textit{open source} de classes e funções SIG disponível na Internet, possibilitando portanto um ambiente colaborativo e seu uso
+\PARstart TerraLib é uma biblioteca \textit{open source} de classes e funções SIG disponível na Internet, possibilitando portanto um ambiente colaborativo e seu uso
 para o desenvolvimento de novas ferramentas. Assim, deseja-se possibilitar uma nova geração de aplicações SIG baseada nos avanços tecnológicos dos bancos de dados espaciais.
-A TerraLib é desenvolvida pela DPI, divisão pertencente ao INPE, Tecgraf, PUC-Rio e FUNCATE.
+A TerraLib é desenvolvida pela DPI, divisão pertencente ao INPE, Tecgraf, PUC-Rio e FUNCATE.\cite{Terralib1}
 
 
 \section{Transformadas Geométricas}
@@ -239,6 +239,8 @@ $F(x)=Qx$\end{center}
 Sendo que $Q=n\times m$.
 Ou seja, transformações do tipo lineares são aquelas obtidas através de mutliplicações matriciais.
 Assim, através das transformações lineares pode-se realizar operações de rotação, cisalhamento e variação de escala.\cite{CGPPBook1}
+
+
 \subsubsection{Afim}
 A transformação Afim é uma transformação que compreende as operações que a transformação linear
 consegue executar mais a operação de translação. A transformada em questão pode ser definida como:
@@ -247,12 +249,13 @@ consegue executar mais a operação de translação. A transformada em questão 
 $F(x)=Qx+q$\end{center}
 Sendo que $Q=n\times m$ e $q$ tem tamanho $m$. \cite{CGPPBook1}
 
+
 \subsubsection{Polinômio Segundo Grau}
 
 $F(x)=a_{0}+a_{1}x+a_{2}y+a_{3}xy+a_{4}x^{2}+a_{5}y^{2}$
 
-\subsubsection{Projeção}
 
+\subsubsection{Projeção}
 A projeção é nada mais que uma transformação linear em um espaço projetivo.\cite{CGPPBook1}
 A forma geral da transformação projetiva é descrita como:
 
@@ -305,8 +308,13 @@ Onde $V_x$ e $V_y$ são os componentes $x$ e $y$ do fluxo ótico.
 
 \subsection{TerraLib}
 Os algoritmos descritos acima são utilizados por duas classes do TerraLib: \texttt{TePDIMMIOMatching} utiliza o operador Moravec e \texttt{TePDIOFMatching} utiliza o fluxo ótico.
+\section{Mosaico}
 
-\section{ Fluxograma para gerar o Mosaico}
+\cite{Leila1}\cite{Zhao1}
+\begin{center}
+$R(i,j)=\frac{\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}W_{z}(l,m)\cdot S_{ij}(l,m)}{\sqrt{\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}W_{z}^{2}(l,m)\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}S_{ij}^{2}(l,m)}}$\end{center}
+
+\subsection{ Fluxograma para gerar o Mosaico}
  A montagem do mosaico se baseia em duas classes do TerraLib, o arquivo MMIOMatching recebe duas imagens e apresenta como resultado os pontos de controle da cena, que são representados através de dois vetores para calculo da função de transformação. Esses pontos localizados são acrescentados na imagem que é salva com outro nome.
 (Talvez colocar algo da dissetação do Dmitri Fedorov)
  Já o segundo arquivo  Mosaic recebe como entrada  a saida do  arquivo MMIOMatching, ou seja, os vetores  que representam os pontos de controle, além das imagens que serão mosaicadas e o nome da nova imagem.
