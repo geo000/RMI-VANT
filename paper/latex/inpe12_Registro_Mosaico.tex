@@ -129,7 +129,7 @@ Os algoritmos que serão descritos subsequentemente são utilizados por duas cla
 \texttt{TePDIMMIOMatching} utiliza o operador Moravec e \texttt{TePDIOFMatching} utiliza o método de fluxo ótico.
 \subsection{Detector Moravec}
 O detector Moravec foi uma dos primeiros detectores de ponto de interesse a serem desenvolvidos, sendo descrito primeiramente 
-em 1977 por Hans Moravec.\cite{Moravec1}
+em 1977 por Hans Moravec\cite{Moravec1}.
 Esse detector é baseado na função de auto-correlação do signal. Ele compara as diferenças de nível de cinza entre a janela atual e de janelas 
 deslocadas em quatro direções paralelas à colunas e linhas. Se o mínimo dessas quatro diferenças é superior a um determinado limiar, então um ponto de interesse
 foi encontrado.\cite{Coderlia1}
@@ -144,10 +144,10 @@ O operador Moravec pode ser definido matematicamente como:
     Onde $p = 2k + 1$ e $q = 2l + 1$, sendo que $k\times l$ é o tamanho da janela utilizada. 
 
 \subsection{Fluxo Ótico}
-Fluxo ótico é a distribuição de velocidades aparentes do movimento de padrões de brilho em uma imagem \cite{GibsonBook1}. Assim, pode-se obter informações importantes a respeito da distribuição espacial dos objetos visualizados 
+Fluxo ótico é a distribuição de velocidades aparentes do movimento de padrões de brilho em uma imagem.\cite{GibsonBook1} Assim, pode-se obter informações importantes a respeito da distribuição espacial dos objetos visualizados 
 e da taxa de mudança dessa distribuição. Discontinuidades do fluxo ótico podem ajudar a segmentar uma determinada imagem 
 em regiões que correspondem a diferentes a diferentes objetos.
-Esse conceito começou a ser estudado na década de 1940 e foi publicado primeiramente pelo psicólogo James Gibson \cite{Gibson1} \cite{OF1}.
+Esse conceito começou a ser estudado na década de 1940 e foi publicado primeiramente pelo psicólogo James Gibson. \cite{Gibson1} \cite{OF1}
 
 Um pixel tendo a localização $(x,y,t)$ com intensidade $I$ será movido em $\Delta x$,$\Delta y$ and $\Delta t$ entre os quadros de uma mesma imagem.
 Assim, chega-se a equação:
@@ -175,7 +175,7 @@ por esta função.
 
 \section{Casamento de pontos de controle}
 Após se obter os pontos de controle de ambas as imagens em que deseja-se realizar o registro,
-é necessário descobrir qual é o ponto da imagem de referência que é o correspondente à um determinado ponto na imagem de ajuste. 
+é necessário descobrir qual é o ponto da imagem de ajuste correspondente à um determinado ponto na imagem de referência. 
 
 Dentre diversos métodos existentes para se descobrir a correspondência entre os pontos, as classes de casamento do TerraLib utilizam
 o método estatístico de correlação cruzada normalizada.
