@@ -58,7 +58,7 @@ Registro de Imagens, Mosaico, VANT, TerraLib, SIFT.
 \end{IEEEkeywords}
 
 \section{Introdução}
-\IEEEPARstart{A} utilização de Veículos Aéreos não Tripulados (VANTs) tem apresentado grande crescimento nos últimos anos devido a diversos fatores, 
+A utilização de Veículos Aéreos não Tripulados (VANTs) tem apresentado grande crescimento nos últimos anos devido a diversos fatores, 
 tais como ausência de tripulação em tarefas tediosas, cansativas ou que envolvem riscos à tripulação, 
 baixo custo operacional e de fabricação comparados às aeronaves convencionais, entre outros. 
 Imagens aéreas obtidas através de VANTs possuem grandes aplicabilidades \cite{Canhoto}
@@ -85,20 +85,106 @@ e pelos algoritmos de registro implementados na biblioteca TerraLib.
 \end{figure}
 
 \section{Registro e Mosaico de Imagens}
-O registro de imagens pode ser entendido como um processo de casamento entre duas imagens que possuem uma área comum. A imagem tomada como base de registro é chamada de imagem de referência, e a imagem a ser registrada é chamada de imagem de ajuste. O processo basicamente envolve três etapas:
+O registro de imagens pode ser entendido como um processo de casamento entre duas imagens que possuem uma área comum.
+A imagem tomada como base de registro é chamada de imagem de referência, e a imagem a ser registrada é chamada de imagem de ajuste.
+O processo basicamente envolve três etapas:
 \begin{enumerate}
-	\item Obtenção de Pontos de Controle;
+	\item Obtenção de pontos de controle;
 	\begin{enumerate}
 		\item Extração de feições;
 		\item Casamento das feições extraídas;
 	\end{enumerate}
-	\item Determinação da função de Transformação;
+	\item Determinação da função de transformação;
 	\item Sobreposição das imagens.
 \end{enumerate}
 
-As imagens a serem registradas podem ser relacionadas atavés de função de transformação simples se a geometria das imagens for semelhante. Se a geometria das imagens for diferente, as transformações podem ser aproximadas utilizando um função polinomial cujos parâmetros são determinados a partir das coordenadas dos pontos de controle. O número de pontos de controle representa a situação de um sistema de equações determinado. Entretanto, como as coordenadas medidas dos pontos de controle estão sujeitas a erros, convém usar um número de pontos maior que o número mínimo, o que define um sistema de equações sobredeterminado.
+As imagens a serem registradas podem ser relacionadas atavés de função de transformação simples se a geometria das imagens for semelhante.
+Se a geometria das imagens for diferente, as transformações podem ser aproximadas utilizando um função polinomial cujos parâmetros são determinados 
+a partir das coordenadas dos pontos de controle.
+O número de pontos de controle representa a situação de um sistema de equações determinado.
+Entretanto, como as coordenadas medidas dos pontos de controle estão sujeitas a erros, convém usar um número de pontos maior que o número mínimo,
+o que define um sistema de equações sobredeterminado.
 
-Mosaico é um produto gerado a partir de técnicas de registro de imagens. É uma composição de imagens adquiridas de diferentes pontos de vista para contruir uma imagem maior, dando uma visão global da cena.
+O produto gerado através das técnicas de registro de imagens é o mosaico, que nada mais é do que uma 
+composição de imagens adquiridas de diferentes pontos de vista visando contruir uma imagem maior, permitindo assim uma visão global da cena.\cite{Fedorov1}
+
+\section{Ferramentas}
+Para se realizar os processos de registro citados anteriormente, foram utilizadas duas ferramentas.
+
+\subsection{TerraLib}
+TerraLib é uma biblioteca \textit{open source} de classes e funções SIG disponível na Internet, possibilitando portanto um ambiente colaborativo e seu uso
+para o desenvolvimento de novas ferramentas. Assim, deseja-se possibilitar uma nova geração de aplicações SIG baseada nos avanços tecnológicos dos bancos de dados espaciais.
+A TerraLib é desenvolvida pela DPI, divisão pertencente ao INPE, Tecgraf, PUC-Rio e FUNCATE.\cite{Terralib1}
+
+
+\subsection{SIFT}
+
+O algoritmo SIFT - Scale Invariant Feature Transform foi desenvolvido por [1] em 1999 e sua função é construir descritores de pontos-chaves de uma imagem,
+ sendo este descritores independentes das mudanças de escala, rotação, translação e luminosidade que uma imagem pode sofrer.
+Utilizamos neste trabalho a implementação em C++ obtida em \cite{Vedaldi}.
+O SIFT é utilizado na busca por correspondências entre sequência de imagens diferentes que contenham partes da mesma cena. 
+A busca é feita através de pontos-chave correspondentes, utilizando-se seus descritores. 
+Nesta pesquisa a distância euclidiana é utilizada em três abordagens diferentes para avaliar a mais apropriada para imagens obtidas por VANTs. 
+Os algoritmos de cada abordagem são: DistEuclidConvencional, o qual aplica a função de busca diretamente, sem tratar seus resultados. 
+DistEuclidRedundante, que chama a função de busca duas vezes, a segunda chamada é feita invertendo-se os parâmetros da função, 
+somente correspondências que ocorram em ambas são guardadas. 
+DistEuclidEsc onde observa-se a continuidade de escala entre segmentos de reta traçados entre os pontos pertencentes e às correspondências geradas 
+por esta função.
+
+\section{Detecção de pontos de interesse}
+Ponto de interesse é como é chamado qualquer ponto de uma imagem em que o sinal mude bidimensionalmente. Cantos ou ângulos
+no formato L, T e Y obecem essa definição assim como pontos pretos em um fundo branco, o final de ramificações ou qualquer textura bidimensional
+significante.\cite{Coderlia1}
+
+Os algoritmos que serão descritos subsequentemente são utilizados por duas classes do TerraLib:
+\texttt{TePDIMMIOMatching} utiliza o operador Moravec e \texttt{TePDIOFMatching} utiliza o método de fluxo ótico.
+\subsection{Detector Moravec}
+O operador Moravec foi uma dos primeiros detectores de ponto de interesse a serem desenvolvidos, sendo descrito primeiramente 
+em 1977 por Hans Moravec.\cite{Moravec1}
+Esse operador é baseado na função de auto-correlação do signal. Ele compara as diferenças de nível de cinza entre a janela atual e de janelas 
+deslocadas em quatro direções paralelas à colunas e linhas. Se o mínimo dessas quatro diferenças é superior a um determinado limiar, então um ponto de interesse
+foi encontrado.\cite{Coderlia1}
+  
+O operador Moravec pode ser definido matematicamente como:
+    \begin{center}$V_{1}=\frac{1}{p(q-1)}\sum_{i=-k}^k\sum_{j=-l}^{l-1}\bigl(g(i,j)-g(i,j+1)\bigr)^2$    \end{center}
+    \begin{center}$V_{2}=\frac{1}{(p-1)q}\sum_{i=-k}^{k-1}\sum_{j=-l}^l\bigl(g(i,j)-g(i+1,j)\bigr)^2$    \end{center}
+    \begin{center}$V_{3}=\frac{1}{(p-1)(q-1)}\sum_{i=-k}^{k-1}\sum_{j=-l}^{l-1}\bigl(g(i,j)-g(i+1,j+1)\bigr)^2$\end{center}
+    \begin{center}$V_{4}=\frac{1}{(p-1)(q-1)}\sum_{i=-k}^{k-1}\sum_{j=-l}^{l-1}\bigl(g(i,j+1)-g(i+1,j)\bigr)^2$\end{center}
+    \begin{center}$V = min(V1,V2,V3,V4)$\end{center}
+
+    Onde $p = 2k + 1$ e $q = 2l + 1$, sendo que $k\times l$ é o tamanho da janela utilizada. 
+
+\subsection{Fluxo Ótico}
+Fluxo ótico é a distribuição de velocidades aparentes do movimento de padrões de brilho em uma imagem \cite{GibsonBook1}. Assim, pode-se obter informações importantes a respeito da distribuição espacial dos objetos visualizados 
+e da taxa de mudança dessa distribuição. Discontinuidades do fluxo ótico podem ajudar a segmentar uma determinada imagem 
+em regiões que correspondem a diferentes a diferentes objetos.
+Esse conceito começou a ser estudado na década de 1940 e foi publicado primeiramente pelo psicólogo americano James Gibson \cite{Gibson1} \cite{OF1}.
+
+Um pixel tendo a localização $(x,y,t)$ com intensidade $I$ será movido em $\Delta x$,$\Delta y$ and $\Delta t$ entre os quadros de uma mesma imagem.
+Assim, chega-se a equação:
+
+\begin{center}
+$\frac{\partial I}{\partial x}\frac{\Delta x}{\Delta t}+\frac{\partial I}{\partial y}\frac{\Delta y}{\Delta t}+\frac{\partial I}{\partial t}\frac{\Delta t}{\Delta t} = 0 $\end{center}
+simplificando tem-se que,
+\begin{center}
+$\frac{\partial I}{\partial x}V_x+\frac{\partial I}{\partial y}V_y+\frac{\partial I}{\partial t} = 0$\end{center}
+Onde $V_x$ e $V_y$ são os componentes $x$ e $y$ do fluxo ótico.
+
+
+\section{Casamento de pontos de interese}
+Após se obter os pontos de interesse de ambas as imagens em que deseja-se realizar o registro,
+é necessário descobrir qual é o ponto da imagem de referência que é o correspondente à um determinado ponto na imagem de ajuste. 
+
+Dentre diversos métodos existentes para se descobrir a correspondência entre os pontos, as classes de casamento do TerraLib utilizam
+o método estatístico de correlação cruzada normalizada.
+Seu funcionamento se dá ao extrair pequenas janelas ao redor de cada ponto de interesse nas duas imagens.
+Aplica-se , então, aos pares o método(descrito abaixo) entre todas as janelas obtidas na imagem de referência com as obtidas na imagem de ajuste.\cite{Fedorov1}\cite{Leila1}\cite{Zhao1}
+\begin{center}
+$R(i,j)=\frac{\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}W_{z}(l,m)\cdot S_{ij}(l,m)}{\sqrt{\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}W_{z}^{2}(l,m)\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}S_{ij}^{2}(l,m)}}$\end{center}
+Onde $S_{ij}$ é a janela da imagem de referência e $W_{z}$ a janela da imagem de ajuste.
+Assim, o maior valor de $R(i,j)$ significa que as duas janelas comparadas são as mais parecidas.
+
+
 
 \section{Transformadas Geométricas}
 Transformação geométrica é o nome que se dá à aplicação de uma determinada função matemática em uma determinada figura geométrica 
@@ -232,8 +318,9 @@ $F(x)=Qx+q$\end{center}
 Sendo que $Q=n\times m$ e $q$ tem tamanho $m$. \cite{CGPPBook1}
 
 \subsubsection{Polinômio Segundo Grau}
-
-$F(x)=a_{0}+a_{1}x+a_{2}y+a_{3}xy+a_{4}x^{2}+a_{5}y^{2}$
+Existe também transformações de segundo grau que são descritas como:
+\begin{center}
+$F(x)=a_{0}+a_{1}x+a_{2}y+a_{3}xy+a_{4}x^{2}+a_{5}y^{2}$\end{center}
 
 \subsubsection{Projeção}
 
@@ -245,42 +332,7 @@ $F(x)=\left( \frac{a_{11}x_{1}+a_{12}x_{2}+...+a_{1n}x_{n}+a_{1n}x_{1(n+1)}}{b_{
 \begin{center}
 $\left. \frac{a_{m1}x_{1}+a_{m2}x_{2}+...+a_{mn}x_{n}+a_{mn}x_{m(n+1)}}{b_{1}x_{1}+b_{2}x_{2}+...+b_{n}x_{n}+b_{n+1}} \right)$\end{center}
 
-\section{Detecção de pontos de interesse}
-Ponto de interesse é como é chamado qualquer ponto de uma imagem em que o sinal mude bidimensionalmente. Cantos ou ângulos
-no formato L, T e Y obecem essa definição assim como pontos pretos em um fundo branco, o final de ramificações ou qualquer textura bidimensional
-significante.\cite{Coderlia1}
 
-\subsection{Detector Moravec}
-O operador Moravec foi uma dos primeiros detectores de ponto de interesse a serem desenvolvidos, sendo descrito primeiramente 
-em 1977 por Hans Moravec.\cite{Moravec1}
-Esse operador é baseado na função de auto-correlação do signal. Ele compara as diferenças de nível de cinza entre a janela atual e de janelas 
-deslocadas em quatro direções paralelas à colunas e linhas. Se o mínimo dessas quatro diferenças é superior a um determinado limiar, então um ponto de interesse
-foi encontrado.\cite{Coderlia1}
-  
-O operador Moravec pode ser definido matematicamente como:
-    \begin{center}$V_{1}=\frac{1}{p(q-1)}\sum_{i=-k}^k\sum_{j=-l}^{l-1}\bigl(g(i,j)-g(i,j+1)\bigr)^2$    \end{center}
-    \begin{center}$V_{2}=\frac{1}{(p-1)q}\sum_{i=-k}^{k-1}\sum_{j=-l}^l\bigl(g(i,j)-g(i+1,j)\bigr)^2$    \end{center}
-    \begin{center}$V_{3}=\frac{1}{(p-1)(q-1)}\sum_{i=-k}^{k-1}\sum_{j=-l}^{l-1}\bigl(g(i,j)-g(i+1,j+1)\bigr)^2$\end{center}
-    \begin{center}$V_{4}=\frac{1}{(p-1)(q-1)}\sum_{i=-k}^{k-1}\sum_{j=-l}^{l-1}\bigl(g(i,j+1)-g(i+1,j)\bigr)^2$\end{center}
-    \begin{center}$V = min(V1,V2,V3,V4)$\end{center}
-
-    Onde $p = 2k + 1$ e $q = 2l + 1$, sendo que $k\times l$ é o tamanho da janela utilizada. 
-
-\subsection{Fluxo Ótico}
-Fluxo ótico é a distribuição de velocidades aparentes do movimento de padrões de brilho em uma imagem \cite{GibsonBook1}. Assim, pode-se obter informações importantes a respeito da distribuição espacial dos objetos visualizados 
-e da taxa de mudança dessa distribuição. Discontinuidades do fluxo ótico podem ajudar a segmentar uma determinada imagem 
-em regiões que correspondem a diferentes a diferentes objetos.
-Esse conceito começou a ser estudado na década de 1940 e foi publicado primeiramente pelo psicólogo americano James Gibson \cite{Gibson1} \cite{OF1}.
-
-Um pixel tendo a localização $(x,y,t)$ com intensidade $I$ será movido em $\Delta x$,$\Delta y$ and $\Delta t$ entre os quadros de uma mesma imagem.
-Assim, chega-se a equação:
-
-\begin{center}
-$\frac{\partial I}{\partial x}\frac{\Delta x}{\Delta t}+\frac{\partial I}{\partial y}\frac{\Delta y}{\Delta t}+\frac{\partial I}{\partial t}\frac{\Delta t}{\Delta t} = 0 $\end{center}
-simplificando tem-se que,
-\begin{center}
-$\frac{\partial I}{\partial x}V_x+\frac{\partial I}{\partial y}V_y+\frac{\partial I}{\partial t} = 0$\end{center}
-Onde $V_x$ e $V_y$ são os componentes $x$ e $y$ do fluxo ótico.
 
 \section{Avaliação da Precisão do Registro}
 Uma operação importante para um sistema de registro é a avaliação da transformação computada. Sejam {g} e {G} as imagens de ajuste e referência respectivamente, e {x, y} e {X, Y} os conjuntos de pontos de controle casados que definem uma transformação de distorção {T}. Podemos verificar o quão a transformação é correta através do cálculo do erro RMSE.
@@ -294,26 +346,7 @@ onde:
 $(x_i, y_i), (X_i, Y_i)$, $i = 1..n$ é o conjunto de pares de pontos de contole obtidos no processo de casamento.
 $T$ é a função de distorção entre as imagens obtida através do casamento de pontos de controle.
 
-\section{TerraLib}
-TerraLib é uma biblioteca \textit{open source} de classes e funções SIG disponível na Internet, possibilitando portanto um ambiente colaborativo e seu uso
-para o desenvolvimento de novas ferramentas. Assim, deseja-se possibilitar uma nova geração de aplicações SIG baseada nos avanços tecnológicos dos bancos de dados espaciais.
-A TerraLib é desenvolvida pela DPI, divisão pertencente ao INPE, Tecgraf, PUC-Rio e FUNCATE.
 
-Os algoritmos descritos anteriormente são utilizados por duas classes do TerraLib: \texttt{TePDIMMIOMatching} utiliza o operador Moravec e \texttt{TePDIOFMatching} utiliza o fluxo ótico.
-
-\section{Algoritmo SIFT}
-
-O algoritmo SIFT - Scale Invariant Feature Transform foi desenvolvido por [1] em 1999 e sua função é construir descritores de pontos-chaves de uma imagem,
- sendo este descritores independentes das mudanças de escala, rotação, translação e luminosidade que uma imagem pode sofrer.
-Utilizamos neste trabalho a implementação em C++ obtida em \cite{Vedaldi}.
-O SIFT é utilizado na busca por correspondências entre sequência de imagens diferentes que contenham partes da mesma cena. 
-A busca é feita através de pontos-chave correspondentes, utilizando-se seus descritores. 
-Nesta pesquisa a distância euclidiana é utilizada em três abordagens diferentes para avaliar a mais apropriada para imagens obtidas por VANTs. 
-Os algoritmos de cada abordagem são: DistEuclidConvencional, o qual aplica a função de busca diretamente, sem tratar seus resultados. 
-DistEuclidRedundante, que chama a função de busca duas vezes, a segunda chamada é feita invertendo-se os parâmetros da função, 
-somente correspondências que ocorram em ambas são guardadas. 
-DistEuclidEsc onde observa-se a continuidade de escala entre segmentos de reta traçados entre os pontos pertencentes e às correspondências geradas 
-por esta função.
 
 \section{ Fluxograma para gerar o Mosaico}
  A montagem do mosaico se baseia em duas classes do TerraLib, o arquivo MMIOMatching recebe duas imagens e apresenta como resultado os pontos de controle da cena, que são representados através de dois vetores para calculo da função de transformação. Esses pontos localizados são acrescentados na imagem que é salva com outro nome.
@@ -330,7 +363,7 @@ Comparação do SIFT e dos algoritmos do TerraLib
 \section{Conclusão}
 Conclusão aqui.
 
-\bibliographystyle{IEEEtran}
+\bibliographystyle{IEEEbib}
 \bibliography{biblio}
 
 \end{document}
