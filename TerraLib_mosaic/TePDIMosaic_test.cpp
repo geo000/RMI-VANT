@@ -112,22 +112,48 @@ int main()
         "output_raster Alloc error"
   );
   
-  int numberOfMosaics = 5;
+  int numberOfMosaics = 3;
   
   for( int mosaicNumber = 0; mosaicNumber < numberOfMosaics; ++mosaicNumber)
   {
           /******************* Matching and Mosaic Beginning *******************/
           init_time = clock() / CLOCKS_PER_SEC;
           
-          if( mosaicNumber == 0 ) {
-            input_image1_ptr = loadRaster( "IMG_0365.jpg" );
-            input_image2_ptr = loadRaster( "IMG_0366.jpg" );
+          /*if( mosaicNumber == 0 ) {
+            input_image1_ptr = loadRaster( "IMG_0365.JPG" );
+            input_image2_ptr = loadRaster( "IMG_0366.JPG" );
           } else if( mosaicNumber == 1 ) {
-            input_image1_ptr = loadRaster( "Mosaic0.jpg" );
-            input_image2_ptr = loadRaster( "IMG_0367.jpg" );
+            input_image1_ptr = loadRaster( "Mosaic0.JPG" );
+            input_image2_ptr = loadRaster( "IMG_0367.JPG" );
           } else if( mosaicNumber == 2 ) {
-            input_image1_ptr = loadRaster( "Mosaic1.jpg" );
-            input_image2_ptr = loadRaster( "IMG_0368.jpg" );
+            input_image1_ptr = loadRaster( "Mosaic1.JPG" );
+            input_image2_ptr = loadRaster( "IMG_0368.JPG" );
+          } else if( mosaicNumber == 3 ) {
+            input_image1_ptr = loadRaster( "Mosaic2.JPG" );
+            input_image2_ptr = loadRaster( "IMG_0369.JPG" );
+          } else if( mosaicNumber == 4 ) {
+            input_image1_ptr = loadRaster( "Mosaic3.JPG" );
+            input_image2_ptr = loadRaster( "IMG_0370.JPG" );
+          } else if( mosaicNumber == 5 ) {
+            input_image1_ptr = loadRaster( "Mosaic4.JPG" );
+            input_image2_ptr = loadRaster( "IMG_0371.JPG" );
+          } else if( mosaicNumber == 6 ) {
+            input_image1_ptr = loadRaster( "Mosaic5.JPG" );
+            input_image2_ptr = loadRaster( "IMG_0372.JPG" );
+          } else if( mosaicNumber == 7 ) {
+            input_image1_ptr = loadRaster( "Mosaic6.JPG" );
+            input_image2_ptr = loadRaster( "IMG_0373.JPG" );
+          } */
+          
+          if( mosaicNumber == 0 ) {
+            input_image1_ptr = loadRaster( "Mosaic0.JPG" );
+            input_image2_ptr = loadRaster( "IMG_0366.JPG" );
+          } else if( mosaicNumber == 1 ) {
+            input_image1_ptr = loadRaster( "Mosaic0.JPG" );
+            input_image2_ptr = loadRaster( "IMG_0367.JPG" );
+          } else if( mosaicNumber == 2 ) {
+            input_image1_ptr = loadRaster( "Mosaic1.JPG" );
+            input_image2_ptr = loadRaster( "IMG_0368.JPG" );
           }
           
           TEAGN_LOGMSG( "Matching started" );
@@ -147,18 +173,18 @@ int main()
           TEAGN_LOGMSG( "Saving Images with Tie-points" );
           raster2Jpeg(
                 input_image1_ptr, 3,
-                TEPDIEXAMPLESRESPATH "mosaic/Tie_Points" + Te2String(mosaicNumber) + "a.jpg", out_tie_points_ptr, 0
+                TEPDIEXAMPLESRESPATH "mosaic/Tie_Points" + Te2String(mosaicNumber) + "a.JPG", out_tie_points_ptr, 0
           );
           raster2Jpeg(
                 input_image2_ptr, 3,
-                TEPDIEXAMPLESRESPATH "mosaic/Tie_Points" + Te2String(mosaicNumber) + "b.jpg", out_tie_points_ptr, 1
+                TEPDIEXAMPLESRESPATH "mosaic/Tie_Points" + Te2String(mosaicNumber) + "b.JPG", out_tie_points_ptr, 1
           );
           
           TEAGN_LOGMSG( "Saving Mosaic Result" );
           TEAGN_TRUE_OR_THROW(
           	TePDIUtils::TeRaster2Jpeg(
           	        output_image,
-          	        TEPDIEXAMPLESRESPATH "mosaic/Mosaic" + Te2String(mosaicNumber) + ".jpg",
+          	        TEPDIEXAMPLESRESPATH "mosaic/Mosaic" + Te2String(mosaicNumber) + ".JPG",
           	        false, 100
           	),
           	"JPEG generation error"
@@ -223,7 +249,7 @@ TeGTParams matching(
   * 2ndDegPolinomial    Second degree polinomial model geometric trasformation
   * projective          Projective geometric trasformation
   *****************************************************************************/
-  gt_params.transformation_name_ = "affine";
+  gt_params.transformation_name_ = "2ndDegPolinomial";
   
   /*****************************************************************************
   * Outliers remotion strategy
@@ -233,15 +259,33 @@ TeGTParams matching(
   * LWOutRemotion        Iteractive leave-worse-out) will remotion be performed
   * RANSACRemotion       Random Sample Consensus based outliers remotion
   *****************************************************************************/
-  gt_params.out_rem_strat_       = TeGTParams::LWOutRemotion;
+  gt_params.out_rem_strat_       = TeGTParams::RANSACRemotion;
   
-  gt_params.max_dmap_error_      = 2; // Direct mapping error
-  gt_params.max_imap_error_      = 2; // Inverse mapping error
-  gt_params.max_dmap_rmse_       = 1 ; // Direct mapping mean square error
-  gt_params.max_imap_rmse_       = 1 ; // Inverse mapping mean square error
+  gt_params.max_dmap_error_      = 5; // Direct mapping error
+  gt_params.max_imap_error_      = 5; // Inverse mapping error
+  gt_params.max_dmap_rmse_       = DBL_MAX; // Direct mapping mean square error
+  gt_params.max_imap_rmse_       = DBL_MAX; // Inverse mapping mean square error
   
   params.SetParameter( "gt_params" , gt_params );
   
+  cout << "Imagem 1: " << endl;
+  cout << input_image1_ptr->params().ncols_ - 1 << endl;
+  cout << input_image1_ptr->params().nlines_ - 1 << endl;
+  cout << "Imagem 2: " << endl;
+  cout << input_image2_ptr->params().ncols_ - 1 << endl;
+  cout << input_image2_ptr->params().nlines_ - 1 << endl;
+  
+  
+/*  TeBox input_box1( 
+    TeCoord2D( 0, 4000 ) , 
+    TeCoord2D( 2000, 0 ) );
+  params.SetParameter( "input_box1" , input_box1 );
+
+  TeBox input_box2( 
+    TeCoord2D( 0, 3998 ) , 
+    TeCoord2D( 2998, 0 ) );
+  params.SetParameter( "input_box2" , input_box2 );   
+*/
 //  params.SetParameter( "skip_geom_filter" , (int)1 );
   
   /*****************************************************************************
@@ -255,10 +299,12 @@ TeGTParams matching(
 //  params.SetParameter( "pixel_x_relation" , input_image1_ptr->params().resx_ / input_image2_ptr->params().resx_ );
 //  params.SetParameter( "pixel_y_relation" , input_image1_ptr->params().resy_ / input_image2_ptr->params().resy_ );
   
-//  params.SetParameter( "enable_multi_thread" , (int)1 );
+		  params.SetParameter( "enable_multi_thread" , (int)1 );
 //  params.SetParameter( "enable_threaded_raster_read", (int)1 );
   
-  params.SetParameter( "max_tie_points" , (unsigned int)1000 );
+  params.SetParameter( "max_tie_points" , (unsigned int)4000 );
+  params.SetParameter( "corr_window_width" , (unsigned int)45 );
+  params.SetParameter( "moravec_window_width" , (unsigned int)11 );
   
   TePDIMMIOMatching match_instance;
 
@@ -341,7 +387,7 @@ void mosaic(
   * TePDIInterpolator::BilinearMethod   Bilinear interpolation method
   * TePDIInterpolator::BicubicMethod    Bicubic interpolation method
   *****************************************************************************/
-  params.SetParameter( "interp_method", TePDIInterpolator::BilinearMethod );
+  params.SetParameter( "interp_method", TePDIInterpolator::NNMethod );
   
   /*****************************************************************************
   * A dummy pixel value for use in pixels where no data is available
