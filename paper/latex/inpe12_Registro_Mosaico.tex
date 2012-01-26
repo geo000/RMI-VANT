@@ -114,14 +114,16 @@ composição de imagens adquiridas de diferentes pontos de vista visando contrui
 TerraLib é uma biblioteca \textit{open source} de classes e funções SIG disponível na Internet, possibilitando portanto um ambiente colaborativo e seu uso
 para o desenvolvimento de novas ferramentas. Atualmente é desenvolvida pelo INPE, PUC-Rio e FUNCATE.\cite{Terralib1}
 
-A utilização desta biblioteca se deu em todos os processos necessários para a realizaço do registro, ou seja, na obtenção de pontos de controle,
+A utilização desta biblioteca se deu em todas as etapas necessárias para a realização do registro, ou seja, na obtenção de pontos de controle,
 na transformação espacial da imagem e na sobreposição das imagens.
 
 
-\section{Detecção de pontos de interesse}
-Ponto de interesse é como é chamado qualquer ponto de uma imagem em que o sinal mude bidimensionalmente. Cantos ou ângulos
+\section{Detecção de pontos de controle}
+Ponto de interesse é como é chamado qualquer ponto de uma imagem em que o sinal tenha uma mudança bidimensional. Cantos ou ângulos
 no formato L, T e Y obecem essa definição assim como pontos pretos em um fundo branco, o final de ramificações ou qualquer textura bidimensional
 significante.\cite{Coderlia1}
+Ponto de controle são, portanto, os pontos de interesse de imagens de sensoriamento remoto que são utilizados para aplicar transformações geométricas
+afim de realizar o processo de registro entre as determinadas imagens.\cite{Schowengerdt}
 
 Os algoritmos que serão descritos subsequentemente são utilizados por duas classes do TerraLib:
 \texttt{TePDIMMIOMatching} utiliza o operador Moravec e \texttt{TePDIOFMatching} utiliza o método de fluxo ótico.
@@ -171,18 +173,18 @@ somente correspondências que ocorram em ambas são guardadas.
 DistEuclidEsc onde observa-se a continuidade de escala entre segmentos de reta traçados entre os pontos pertencentes e às correspondências geradas 
 por esta função.
 
-\section{Casamento de pontos de interese}
-Após se obter os pontos de interesse de ambas as imagens em que deseja-se realizar o registro,
+\section{Casamento de pontos de controle}
+Após se obter os pontos de controle de ambas as imagens em que deseja-se realizar o registro,
 é necessário descobrir qual é o ponto da imagem de referência que é o correspondente à um determinado ponto na imagem de ajuste. 
 
 Dentre diversos métodos existentes para se descobrir a correspondência entre os pontos, as classes de casamento do TerraLib utilizam
 o método estatístico de correlação cruzada normalizada.
-Seu funcionamento se dá ao extrair pequenas janelas ao redor de cada ponto de interesse nas duas imagens.
+Seu funcionamento se dá ao extrair pequenas janelas ao redor de cada ponto de controle nas duas imagens.
 Aplica-se , então, aos pares o método(descrito abaixo) entre todas as janelas obtidas na imagem de referência com as obtidas na imagem de ajuste.\cite{Fedorov1}\cite{Leila1}\cite{Zhao1}
 \begin{center}
 $R(i,j)=\frac{\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}W_{z}(l,m)\cdot S_{ij}(l,m)}{\sqrt{\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}W_{z}^{2}(l,m)\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}S_{ij}^{2}(l,m)}}$\end{center}
 Onde $S_{ij}$ é a janela da imagem de referência e $W_{z}$ a janela da imagem de ajuste.
-Assim, o maior valor de $R(i,j)$ significa que as duas janelas comparadas são as mais parecidas.
+Assim, quanto maior valor de $R(i,j)$ maior é a semelhança entre as duas janelas comparadas.
 
 
 
