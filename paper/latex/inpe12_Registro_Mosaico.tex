@@ -125,8 +125,6 @@ significante.\cite{Coderlia1}
 Ponto de controle são, portanto, os pontos de interesse de imagens de sensoriamento remoto que são utilizados para aplicar transformações geométricas
 afim de realizar o processo de registro entre as determinadas imagens.\cite{Schowengerdt}
 
-Os algoritmos que serão descritos subsequentemente são utilizados por duas classes do TerraLib:
-\texttt{TePDIMMIOMatching} utiliza o método de Moravec e \texttt{TePDIOFMatching} utiliza o método de fluxo ótico.
 \subsection{Detector Moravec}
 O detector Moravec foi uma dos primeiros detectores de ponto de interesse a serem desenvolvidos, sendo descrito primeiramente 
 em 1977 por Hans Moravec\cite{Moravec1}.
@@ -143,6 +141,7 @@ O operador Moravec pode ser definido matematicamente como:
 
     Onde $p = 2k + 1$ e $q = 2l + 1$, sendo que $k\times l$ é o tamanho da janela utilizada. 
 
+Na biblioteca TerraLib a classe \texttt{TePDIMMIOMatching} implementa o método Moravec.
 \subsection{Fluxo Ótico}
 Fluxo ótico é a distribuição de velocidades aparentes do movimento de padrões de brilho em uma imagem.\cite{GibsonBook1} Assim, pode-se obter informações importantes a respeito da distribuição espacial dos objetos visualizados 
 e da taxa de mudança dessa distribuição. Discontinuidades do fluxo ótico podem ajudar a segmentar uma determinada imagem 
@@ -159,9 +158,12 @@ simplificando tem-se que,
 $\frac{\partial I}{\partial x}V_x+\frac{\partial I}{\partial y}V_y+\frac{\partial I}{\partial t} = 0$\end{center}
 Onde $V_x$ e $V_y$ são os componentes $x$ e $y$ do fluxo ótico.
 
+Na biblioteca TerraLib a classe \texttt{TePDIOFMatching} implementa o método de fluxo ótico.
+
 \subsection{SIFT}
 
-O algoritmo SIFT, acrônimo para \textit{Scale Invariant Feature Transform}, foi publicado por David Lowe \cite{Lowe2} em 1999 e tem função de construir descritores de pontos-chaves de uma imagem,
+O algoritmo SIFT, acrônimo para \textit{Scale Invariant Feature Transform}, foi publicado por David Lowe \cite{Lowe2} em 1999 
+e tem função de construir descritores de pontos-chaves de uma imagem,
  sendo este descritores independentes das mudanças de escala, rotação, translação e luminosidade que uma imagem pode sofrer.
 Utilizou-se neste trabalho a implementação em C++ obtida em \cite{Vedaldi}.
 O SIFT é utilizado na busca por correspondências entre sequência de imagens diferentes que contenham partes da mesma cena. 
@@ -170,9 +172,17 @@ Nesta pesquisa a distância euclidiana é utilizada em três abordagens diferent
 Os algoritmos de cada abordagem são: DistEuclidConvencional, o qual aplica a função de busca diretamente, sem tratar seus resultados. 
 DistEuclidRedundante, que chama a função de busca duas vezes, a segunda chamada é feita invertendo-se os parâmetros da função, 
 somente correspondências que ocorram em ambas são guardadas. 
-DistEuclidEsc onde observa-se a continuidade de escala entre segmentos de reta traçados entre os pontos pertencentes e às correspondências geradas 
-por esta função.
+DistEuclidEsc onde observa-se a continuidade de escala entre segmentos de reta traçados entre os pontos pertencentes 
+e às correspondências geradas por esta função.
 
+
+O algoritmo SIFT, acrônimo para \textit{Scale Invariant Feature Transform}, foi publicado por David Lowe em 1999 
+e mostrou ser robusto no reconhecimento de objetos parcialmente cobertos e espalhados pela imagem.
+O algoritmo transforma uma imagem em uma coleção de vetores de feições locais, que são invariáveis a translação, variação de escala e rotação 
+e são parcialmente invariáveis a mudanças de iluminação e a projeções afim e 3D.
+Esses vetores são obtidos através da função de diferenças gaussianas.
+
+\cite{Lowe2}
 \begin{center}
 $M_{ij}=\sqrt{(I_{ij}-I_{i+1,j})^{2}+(I_{ij}-I_{i,j+1})^{2}}$\end{center}
 
