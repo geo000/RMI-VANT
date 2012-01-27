@@ -111,7 +111,7 @@ composição de imagens adquiridas de diferentes pontos de vista visando contrui
 \section{Ferramenta utilizada}
 
 \subsection{TerraLib}
-TerraLib é uma biblioteca \textit{open source} de classes e funções SIG disponível na Internet, possibilitando portanto um ambiente colaborativo e seu uso
+TerraLib é uma biblioteca \textit{open source} de classes e funções SIG disponível na Internet, possibilitando portanto, um ambiente colaborativo e seu uso
 para o desenvolvimento de novas ferramentas. Atualmente é desenvolvida pelo INPE, PUC-Rio e FUNCATE.\cite{Terralib1}
 
 A utilização desta biblioteca se deu em todas as etapas necessárias para a realização do registro, ou seja, na obtenção de pontos de controle,
@@ -191,6 +191,7 @@ Assim, quanto maior valor de $R(i,j)$ maior é a semelhança entre as duas janel
 \section{Transformações Geométricas}
 Com o casamento dos pontos de controle já realizado, agora é necessário aplicar funções de transformação geométrica para que se possa ter a imagem de ajuste
 adequada geométricamente e espacialmente afim de sobrepor as imagens obtendo o mosaico.
+
 Transformação geométrica é o nome que se dá à aplicação de uma determinada função matemática em uma determinada figura geométrica 
 em que o resultado é geometricamente igual ou semelhante à figura original.
 
@@ -305,7 +306,8 @@ z\\
 \end{figure}
 
 \subsection{Tipos de transformação}
-É necessário primeiramente 
+Existem basicamente quatro tipos de transformações geométricas, mas somente três estão disponíveis no TerraLib:
+afim, polinomial de segundo grau e projetiva.
 \subsubsection{Linear}
 A transformação linear ou também chamada de euclidiana, pode ser definida como:
 \begin{center}
@@ -321,10 +323,18 @@ consegue executar mais a operação de translação. A transformada em questão 
 $F(x)=Qx+q$\end{center}
 Sendo que $Q=n\times m$ e $q$ tem tamanho $m$. \cite{CGPPBook1}
 
-\subsubsection{Polinômio Segundo Grau}
+\subsubsection{Polinômio de Segundo Grau}
 Existe também transformações de segundo grau que são descritas como:
 \begin{center}
-$F(x)=a_{0}+a_{1}x+a_{2}y+a_{3}xy+a_{4}x^{2}+a_{5}y^{2}$\end{center}
+$F(x)=Wa$\end{center}
+
+\begin{center}
+$W=\begin{bmatrix}1 & x_{1} & y_{1} & x_{1}y_{1} & x_{1}^{2} & y_{1}^{2}\\
+1 & x_{2} & y_{2} & x_{2}y_{2} & x_{2}^{2} & y_{2}^{2}\\
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots\\
+1 & x_{n} & y_{n} & x_{n}y_{n} & x_{n}^{2} & y_{n}^{2}
+\end{bmatrix}$\end{center}
+Onde $W=n\times m$ e $a$ tem tamanho $m$.\cite{Schowengerdt}
 
 \subsubsection{Projeção}
 
