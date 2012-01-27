@@ -161,7 +161,7 @@ Onde $V_x$ e $V_y$ são os componentes $x$ e $y$ do fluxo ótico.
 
 \subsection{SIFT}
 
-O algoritmo SIFT, acrônimo para \textit{Scale Invariant Feature Transform}, foi publicado por David Lowe \cite{Lowe2} em 1999 e tem função é construir descritores de pontos-chaves de uma imagem,
+O algoritmo SIFT, acrônimo para \textit{Scale Invariant Feature Transform}, foi publicado por David Lowe \cite{Lowe2} em 1999 e tem função de construir descritores de pontos-chaves de uma imagem,
  sendo este descritores independentes das mudanças de escala, rotação, translação e luminosidade que uma imagem pode sofrer.
 Utilizou-se neste trabalho a implementação em C++ obtida em \cite{Vedaldi}.
 O SIFT é utilizado na busca por correspondências entre sequência de imagens diferentes que contenham partes da mesma cena. 
@@ -172,6 +172,12 @@ DistEuclidRedundante, que chama a função de busca duas vezes, a segunda chamad
 somente correspondências que ocorram em ambas são guardadas. 
 DistEuclidEsc onde observa-se a continuidade de escala entre segmentos de reta traçados entre os pontos pertencentes e às correspondências geradas 
 por esta função.
+
+\begin{center}
+$M_{ij}=\sqrt{(I_{ij}-I_{i+1,j})^{2}+(I_{ij}-I_{i,j+1})^{2}}$\end{center}
+
+\begin{center}
+$R_{ij}=atan2(I_{ij}-I_{i+1,j},I_{i,j+1}-I_{ij})$\end{center}
 
 \section{Casamento de pontos de controle}
 Após se obter os pontos de controle de ambas as imagens em que deseja-se realizar o registro,
