@@ -141,7 +141,7 @@ O operador Moravec pode ser definido matematicamente como:
 
     Onde $p = 2k + 1$ e $q = 2l + 1$, sendo que $k\times l$ é o tamanho da janela utilizada. 
 
-Na biblioteca TerraLib a classe \texttt{TePDIMMIOMatching} implementa o método Moravec.
+Na biblioteca TerraLib, o método Moravec é implementado pela classe \texttt{TePDIMMIOMatching}.
 \subsection{Fluxo Ótico}
 Fluxo ótico é a distribuição de velocidades aparentes do movimento de padrões de brilho em uma imagem.\cite{GibsonBook1} Assim, pode-se obter informações importantes a respeito da distribuição espacial dos objetos visualizados 
 e da taxa de mudança dessa distribuição. Discontinuidades do fluxo ótico podem ajudar a segmentar uma determinada imagem 
@@ -158,7 +158,7 @@ simplificando tem-se que,
 $\frac{\partial I}{\partial x}V_x+\frac{\partial I}{\partial y}V_y+\frac{\partial I}{\partial t} = 0$\end{center}
 Onde $V_x$ e $V_y$ são os componentes $x$ e $y$ do fluxo ótico.
 
-Na biblioteca TerraLib a classe \texttt{TePDIOFMatching} implementa o método de fluxo ótico.
+Na biblioteca TerraLib, o método de fluxo ótico é implementado pela classe \texttt{TePDIOFMatching}.
 
 \subsection{SIFT}
 
@@ -180,29 +180,34 @@ O algoritmo SIFT, acrônimo para \textit{Scale Invariant Feature Transform}, foi
 e mostrou ser robusto no reconhecimento de objetos parcialmente cobertos e espalhados pela imagem.
 O algoritmo transforma uma imagem em uma coleção de vetores de feições locais, que são invariáveis a translação, variação de escala e rotação 
 e são parcialmente invariáveis a mudanças de iluminação e a projeções afim e 3D.
-Esses vetores são obtidos através da função de diferenças gaussianas.
+Esses vetores são obtidos através da função de diferenças gaussianas no espaço de escala.
+Após esse procedimento obtém-se o gradiente e a orientação da imagem, assim, aplica-se a função de magnitude de gradiente $M_{ij}$ e
+a função de orientação $R_{ij}$ nos vetores obtidos. cite{Lowe2}
 
-\cite{Lowe2}
 \begin{center}
 $M_{ij}=\sqrt{(I_{ij}-I_{i+1,j})^{2}+(I_{ij}-I_{i,j+1})^{2}}$\end{center}
-
 \begin{center}
 $R_{ij}=atan2(I_{ij}-I_{i+1,j},I_{i,j+1}-I_{ij})$\end{center}
 
+
+
+Nos testes foi utilizado um implementação em C++ obtida em \cite{Vedaldi}.
+
 \section{Casamento de pontos de controle}
 Após se obter os pontos de controle de ambas as imagens em que deseja-se realizar o registro,
-é necessário descobrir qual é o ponto da imagem de ajuste correspondente à um determinado ponto na imagem de referência. 
+é necessário descobrir qual é o ponto da imagem de ajuste correspondente à um determinado ponto na imagem de referência.
 
-Dentre diversos métodos existentes para se descobrir a correspondência entre os pontos, as classes de casamento do TerraLib utilizam
-o método estatístico de correlação cruzada normalizada.
-Seu funcionamento se dá ao extrair pequenas janelas ao redor de cada ponto de controle nas duas imagens.
-Aplica-se , então, aos pares o método(descrito abaixo) entre todas as janelas obtidas na imagem de referência com as obtidas na imagem de ajuste.\cite{Fedorov1}\cite{Leila1}\cite{Zhao1}
+\subsection{Correlação cruzada normalizada}
+O funcionamento do método estatístico de correlação cruzada normalizada se dá ao extrair pequenas janelas ao redor de cada ponto de controle nas duas imagens.
+Aplica-se então, aos pares o método(descrito abaixo) entre todas as janelas obtidas na imagem de referência com as obtidas na imagem de ajuste.\cite{Fedorov1}\cite{Leila1}\cite{Zhao1}
 \begin{center}
 $R(i,j)=\frac{\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}W_{z}(l,m)\cdot S_{ij}(l,m)}{\sqrt{\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}W_{z}^{2}(l,m)\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}S_{ij}^{2}(l,m)}}$\end{center}
 Onde $S_{ij}$ é a janela da imagem de referência e $W_{z}$ a janela da imagem de ajuste.
 Assim, quanto maior valor de $R(i,j)$ maior é a semelhança entre as duas janelas comparadas.
+O TerraLib implenta esse método de matching em suas classes.
 
-
+\subsection{SIFT}
+O método de casamento que 
 
 \section{Transformações Geométricas}
 Com o casamento dos pontos de controle já realizado, agora é necessário aplicar funções de transformação geométrica para que se possa ter a imagem de ajuste
