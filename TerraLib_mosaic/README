@@ -1,15 +1,48 @@
 1) To run this example, create a folder called "mosaic" in image_processing/resources
 
-$ sudo mkdir TerraLib_directory/examples/image_processing/resources/mosaico
+$ sudo mkdir TerraLib_directory/examples/image_processing/resources/mosaic
 
-2) Paste the rasters in this folder
+2) Copy the files contained in the data folder of github repository and paste in mosaic folder previously created
 
-Below is an explanation of how to compile TerraLib
+3) Copy and paste the file TePDIMosaic_test.cpp of github repository to the folder examples/image_processing/source/TePDIMosaic/
+
+4) Through the terminal, access the folder /examples/image_processing
+
+5) Run: $ ../../bin/terralib_pdiexamples_TePDIMosaic
+
+Below is an explanation of how to compile TerraLib on Ubuntu and Mac OS X Lion. Thanks Emiliano F. Castejon.
+
+=================================
+How to complie TerraLib on Mac
+=================================
+How to compile TerraLib on Mac OS X 10.7
+1) Install Xcode (App Store)
+2) Install Mac Ports <http://www.macports.org/>
+3) Install cmake <http://www.cmake.org/>
+4) Install ccache <http://trac.macports.org/wiki/howto/ccache>
+5) Install libgeotiff: $ sudo port install libgeotiff
+6) SVN TerraLib 4.2.0 (Trunk)
+
+   $ cd / SVN_directory
+
+   $ svn co https://svn.dpi.inpe.br/terralib/trunk/ terralib420
+
+8) Compiling TerraLib
+
+   $ cd /SVN_directory/terralib420
+   $ autoreconf -iv
+
+   Check the configuration options
+   $ ./configure --help
+
+   Below is compilation used (without - enable-shapelib does not compile):
+   $ ./configure --with-jpeg=/opt/local --with-geotiff=/opt/local --enable-examples --enable-shapelib
+   $ make
+
 
 =================================
 How to complie TerraLib on Ubuntu
 =================================
-
 1) Install the C++ compiler and libraries
 
    $ sudo apt-get install gcc g++ build-essential autoconf automake cmake ccache
