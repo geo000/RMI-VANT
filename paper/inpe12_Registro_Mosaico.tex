@@ -176,27 +176,13 @@ Na biblioteca TerraLib, o método de fluxo ótico é implementado pela classe \t
 
 \subsection{SIFT}
 
-O algoritmo SIFT, acrônimo para \textit{Scale Invariant Feature Transform}, foi publicado por David Lowe \cite{Lowe2} em 1999 
-e tem função de construir descritores de pontos-chaves de uma imagem,
- sendo este descritores independentes das mudanças de escala, rotação, translação e luminosidade que uma imagem pode sofrer.
-Utilizou-se neste trabalho a implementação em C++ obtida em \cite{Vedaldi}.
-O SIFT é utilizado na busca por correspondências entre sequência de imagens diferentes que contenham partes da mesma cena. 
-A busca é feita através de pontos-chave correspondentes, utilizando-se seus descritores. 
-Nesta pesquisa a distância euclidiana é utilizada em três abordagens diferentes para avaliar a mais apropriada para imagens obtidas por VANTs. 
-Os algoritmos de cada abordagem são: DistEuclidConvencional, o qual aplica a função de busca diretamente, sem tratar seus resultados. 
-DistEuclidRedundante, que chama a função de busca duas vezes, a segunda chamada é feita invertendo-se os parâmetros da função, 
-somente correspondências que ocorram em ambas são guardadas. 
-DistEuclidEsc onde observa-se a continuidade de escala entre segmentos de reta traçados entre os pontos pertencentes 
-e às correspondências geradas por esta função.
-
-
 O algoritmo SIFT, acrônimo para \textit{Scale Invariant Feature Transform}, foi publicado por David Lowe em 1999 
 e mostrou ser robusto no reconhecimento de objetos parcialmente cobertos e espalhados pela imagem.
 O algoritmo transforma uma imagem em uma coleção de vetores de feições locais, que são invariáveis a translação, variação de escala e rotação 
 e são parcialmente invariáveis a mudanças de iluminação e a projeções afim e 3D.
 Esses vetores são obtidos através da função de diferenças gaussianas no espaço de escala.
-Após esse procedimento obtém-se o gradiente e a orientação da imagem, aplicando-se a função de magnitude de gradiente $M_{ij}$ e
-a função de orientação $R_{ij}$ nos vetores obtidos. \cite{Lowe2}
+Após esse procedimento, obtem-se os pontos chaves da imagem aplicando-se a função de magnitude de gradiente $M_{ij}$ e
+a função de orientação $R_{ij}$ nos vetores obtidos anteriormente. \cite{Lowe2}
 
 \begin{center}
 $M_{ij}=\sqrt{(I_{ij}-I_{i+1,j})^{2}+(I_{ij}-I_{i,j+1})^{2}}$\end{center}
@@ -205,7 +191,7 @@ $R_{ij}=atan2(I_{ij}-I_{i+1,j},I_{i,j+1}-I_{ij})$\end{center}
 
 
 
-Nos testes foi utilizado um implementação em C++ obtida em \cite{Vedaldi}.
+Nos testes utilizando SIFT foi utilizado a implementação em C++ obtida em \cite{Vedaldi}.
 
 \section{Casamento de pontos de controle}
 Após se obter os pontos de controle de ambas as imagens em que deseja-se realizar o registro,
@@ -218,10 +204,13 @@ Aplica-se então, aos pares o método(descrito abaixo) entre todas as janelas ob
 $R(i,j)=\frac{\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}W_{z}(l,m)\cdot S_{ij}(l,m)}{\sqrt{\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}W_{z}^{2}(l,m)\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}S_{ij}^{2}(l,m)}}$\end{center}
 Onde $S_{ij}$ é a janela da imagem de referência e $W_{z}$ a janela da imagem de ajuste.
 Assim, quanto maior valor de $R(i,j)$ maior é a semelhança entre as duas janelas comparadas.
-O TerraLib implenta esse método de matching em suas classes.
+O TerraLib implenta esse método de casamento em suas classes.
 
 \subsection{SIFT}
-
+Para realizar o casamento entre os pontos chaves das imagens,
+o SIFT utiliza o algoritmo de vizinho mais próximo para encontrar o ponto chave da imagem de ajuste mais parecido à um determinado ponto imagem de referência.
+Pode-se saber a probablilidade em que um determinado par de pontos chaves foi corretamente casado calculando a razão entre a distância entre o vizinho mais próximo e o segundo vizinho mais próximo.
+Define-se então, um limiar para esta razão afim de classificar probabilisticamente o casamento como correto ou errôneo.\cite{Lowe2}\cite{Lowe3}
 
 \section{Transformações Geométricas}
 Com o casamento dos pontos de controle já realizado, agora é necessário aplicar funções de transformação geométrica para que se possa ter a imagem de ajuste
