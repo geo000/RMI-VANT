@@ -84,6 +84,29 @@ e pelos algoritmos de registro implementados na biblioteca TerraLib.
   \label{fig:plano_voo}
 \end{figure}
 
+\section{Ferramenta utilizada}
+
+\subsection{TerraLib}
+TerraLib é uma biblioteca \textit{open source} de classes e funções SIG disponível na Internet, possibilitando portanto, um ambiente colaborativo e seu uso
+para o desenvolvimento de novas ferramentas. Atualmente é desenvolvida pelo INPE, PUC-Rio e FUNCATE.\cite{Terralib1}
+
+A utilização desta biblioteca se deu em todas as etapas necessárias para a realização do registro, ou seja, na obtenção de pontos de controle,
+na transformação espacial da imagem e na sobreposição das imagens.
+
+\section{ Estrutura Lógica do Sistema }
+ 
+O sistema está separado em duas partes baseados em arquivos do Terralib: a) A primeira parte se refere ao bloco MMIOMatching, duas imagens são utilizados como paramêtros do bloco e como resultado são apresentados o registro e extração dos pontos de controles. Esses pontos de controle são representados através de dois vetores para calculo da função de transformação, onde são localizados e acrescentados na nova imagem resultante.
+b) A Segunda parte se refere ao bloco Mosaic, que recebe como paramêtros de entrada a saida do bloco MMIOMatching, ou seja, os vetores  que representam os pontos de controle.Além disto, são parametros de entrada as imagens que serão mosaicadas e o nome da nova imagem que apresentará o resultado do mosaico.
+Veja a Figura~\ref{fig:estrutura_logica} que apresenta a estrutura lógica de funcionamento do sistema.
+
+\begin{figure}[h!t]
+  \centering
+  \includegraphics[width=3.3in]{figuras/estrutura_logica}
+  \caption{Estrutura Lógica do Sistema}
+  \label{fig:estrutura_logica}
+\end{figure}
+
+
 \section{Registro e Mosaico de Imagens}
 O registro de imagens pode ser entendido como um processo de casamento entre duas imagens que possuem uma área comum.
 A imagem tomada como base de registro é chamada de imagem de referência e a imagem a ser registrada é chamada de imagem de ajuste.
@@ -107,15 +130,6 @@ o que define um sistema de equações sobredeterminado.
 
 O produto gerado através das técnicas de registro de imagens é o mosaico, que nada mais é do que uma 
 composição de imagens adquiridas de diferentes pontos de vista visando contruir uma imagem maior, permitindo assim uma visão global da cena.\cite{Fedorov1}
-
-\section{Ferramenta utilizada}
-
-\subsection{TerraLib}
-TerraLib é uma biblioteca \textit{open source} de classes e funções SIG disponível na Internet, possibilitando portanto, um ambiente colaborativo e seu uso
-para o desenvolvimento de novas ferramentas. Atualmente é desenvolvida pelo INPE, PUC-Rio e FUNCATE.\cite{Terralib1}
-
-A utilização desta biblioteca se deu em todas as etapas necessárias para a realização do registro, ou seja, na obtenção de pontos de controle,
-na transformação espacial da imagem e na sobreposição das imagens.
 
 
 \section{Detecção de pontos de controle}
@@ -361,23 +375,23 @@ $(x_i, y_i), (X_i, Y_i)$, $i = 1..n$ é o conjunto de pares de pontos de contole
 $T$ é a função de distorção entre as imagens obtida através do casamento de pontos de controle.
 
 
-
-\section{ Fluxograma para gerar o Mosaico}
- A montagem do mosaico se baseia em duas classes do TerraLib, o arquivo MMIOMatching recebe duas imagens e apresenta como resultado os pontos de controle da cena, que são representados através de dois vetores para calculo da função de transformação. Esses pontos localizados são acrescentados na imagem que é salva com outro nome.
-(Talvez colocar algo da dissetação do Dmitri Fedorov)
- Já o segundo arquivo  Mosaic recebe como entrada  a saida do  arquivo MMIOMatching, ou seja, os vetores  que representam os pontos de controle, além das imagens que serão mosaicadas e o nome da nova imagem.
-(Devemos definir as configurações nesse item, qual foi a função de transformação que usamos entre outros detalhes, seria interessante fazer um desenho com explicando esse clico)
-
 \section{Resultados}
 Devemos descrever quanto tempo levou para executar, quantas imagens foram utilizadas para gerar o mosaico, quais as vantagens. 
+
+No trabalho, foram feitos alguns experimentos .... ( MARCOS EH COM VC)
+
 
 \section{Comparação dos algoritmos}
 Comparação do SIFT e dos algoritmos do TerraLib
 
 \section{Conclusão}
-Conclusão aqui.
+No trabalho foram apresentados alguns resultados de testes referentes ao mosaico de seqüências de vídeos aéreos.A ideia é de aumentar a qualidade e a velocidade dos processos de mosaico e registros.
+Os testes se baseam em algoritmos extração automática como o algoritmo Mosaic do Terralib, ( descrever as vantagens do terralib) e algoritmo SIFT que diminui o impacto de algumas das variações presentes nas imagens da aplicação como: rotação, translação e escala. 
+As atuais diretrizes do projeto visam o aperfeiçoamento do sistema, para realizar: a navegação aérea autônoma de forma eficiente.
+
 
 \bibliographystyle{IEEEbib}
 \bibliography{biblio}
 
 \end{document}
+
