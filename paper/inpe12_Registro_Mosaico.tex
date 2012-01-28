@@ -84,6 +84,29 @@ e pelos algoritmos de registro implementados na biblioteca TerraLib.
   \label{fig:plano_voo}
 \end{figure}
 
+\section{Ferramenta utilizada}
+
+\subsection{TerraLib}
+TerraLib é uma biblioteca \textit{open source} de classes e funções SIG disponível na Internet, possibilitando portanto, um ambiente colaborativo e seu uso
+para o desenvolvimento de novas ferramentas. Atualmente é desenvolvida pelo INPE, PUC-Rio e FUNCATE.\cite{Terralib1}
+
+A utilização desta biblioteca se deu em todas as etapas necessárias para a realização do registro, ou seja, na obtenção de pontos de controle,
+na transformação espacial da imagem e na sobreposição das imagens.
+
+\section{ Estrutura Lógica do Sistema }
+ 
+O sistema está separado em duas partes baseados em arquivos do Terralib: a) A primeira parte se refere ao bloco MMIOMatching, duas imagens são utilizados como paramêtros do bloco e como resultado são apresentados o registro e extração dos pontos de controles. Esses pontos de controle são representados através de dois vetores para calculo da função de transformação, onde são localizados e acrescentados na nova imagem resultante.
+b) A Segunda parte se refere ao bloco Mosaic, que recebe como paramêtros de entrada a saida do bloco MMIOMatching, ou seja, os vetores  que representam os pontos de controle.Além disto, são parametros de entrada as imagens que serão mosaicadas e o nome da nova imagem que apresentará o resultado do mosaico.
+Veja a Figura~\ref{fig:estrutura_logica} que apresenta a estrutura lógica de funcionamento do sistema.
+
+\begin{figure}[h!t]
+  \centering
+  \includegraphics[width=3.3in]{figuras/estrutura_logica}
+  \caption{Estrutura Lógica do Sistema}
+  \label{fig:estrutura_logica}
+\end{figure}
+
+
 \section{Registro e Mosaico de Imagens}
 O registro de imagens pode ser entendido como um processo de casamento entre duas imagens que possuem uma área comum.
 A imagem tomada como base de registro é chamada de imagem de referência e a imagem a ser registrada é chamada de imagem de ajuste.
@@ -108,15 +131,6 @@ o que define um sistema de equações sobredeterminado.
 O produto gerado através das técnicas de registro de imagens é o mosaico, que nada mais é do que uma 
 composição de imagens adquiridas de diferentes pontos de vista visando contruir uma imagem maior, permitindo assim uma visão global da cena.\cite{Fedorov1}
 
-\section{Ferramenta utilizada}
-
-\subsection{TerraLib}
-TerraLib é uma biblioteca \textit{open source} de classes e funções SIG disponível na Internet, possibilitando portanto, um ambiente colaborativo e seu uso
-para o desenvolvimento de novas ferramentas. Atualmente é desenvolvida pelo INPE, PUC-Rio e FUNCATE.\cite{Terralib1}
-
-A utilização desta biblioteca se deu em todas as etapas necessárias para a realização do registro, ou seja, na obtenção de pontos de controle,
-na transformação espacial da imagem e na sobreposição das imagens.
-
 
 \section{Detecção de pontos de controle}
 Ponto de interesse é como é chamado qualquer ponto de uma imagem em que o sinal tenha uma mudança bidimensional. Cantos ou ângulos
@@ -125,8 +139,6 @@ significante.\cite{Coderlia1}
 Ponto de controle são, portanto, os pontos de interesse de imagens de sensoriamento remoto que são utilizados para aplicar transformações geométricas
 afim de realizar o processo de registro entre as determinadas imagens.\cite{Schowengerdt}
 
-Os algoritmos que serão descritos subsequentemente são utilizados por duas classes do TerraLib:
-\texttt{TePDIMMIOMatching} utiliza o operador Moravec e \texttt{TePDIOFMatching} utiliza o método de fluxo ótico.
 \subsection{Detector Moravec}
 O detector Moravec foi uma dos primeiros detectores de ponto de interesse a serem desenvolvidos, sendo descrito primeiramente 
 em 1977 por Hans Moravec\cite{Moravec1}.
@@ -143,6 +155,7 @@ O operador Moravec pode ser definido matematicamente como:
 
     Onde $p = 2k + 1$ e $q = 2l + 1$, sendo que $k\times l$ é o tamanho da janela utilizada. 
 
+Na biblioteca TerraLib, o método Moravec é implementado pela classe \texttt{TePDIMMIOMatching}.
 \subsection{Fluxo Ótico}
 Fluxo ótico é a distribuição de velocidades aparentes do movimento de padrões de brilho em uma imagem.\cite{GibsonBook1} Assim, pode-se obter informações importantes a respeito da distribuição espacial dos objetos visualizados 
 e da taxa de mudança dessa distribuição. Discontinuidades do fluxo ótico podem ajudar a segmentar uma determinada imagem 
@@ -159,9 +172,12 @@ simplificando tem-se que,
 $\frac{\partial I}{\partial x}V_x+\frac{\partial I}{\partial y}V_y+\frac{\partial I}{\partial t} = 0$\end{center}
 Onde $V_x$ e $V_y$ são os componentes $x$ e $y$ do fluxo ótico.
 
+Na biblioteca TerraLib, o método de fluxo ótico é implementado pela classe \texttt{TePDIOFMatching}.
+
 \subsection{SIFT}
 
-O algoritmo SIFT, acrônimo para \textit{Scale Invariant Feature Transform}, foi publicado por David Lowe \cite{Lowe2} em 1999 e tem função é construir descritores de pontos-chaves de uma imagem,
+O algoritmo SIFT, acrônimo para \textit{Scale Invariant Feature Transform}, foi publicado por David Lowe \cite{Lowe2} em 1999 
+e tem função de construir descritores de pontos-chaves de uma imagem,
  sendo este descritores independentes das mudanças de escala, rotação, translação e luminosidade que uma imagem pode sofrer.
 Utilizou-se neste trabalho a implementação em C++ obtida em \cite{Vedaldi}.
 O SIFT é utilizado na busca por correspondências entre sequência de imagens diferentes que contenham partes da mesma cena. 
@@ -170,23 +186,42 @@ Nesta pesquisa a distância euclidiana é utilizada em três abordagens diferent
 Os algoritmos de cada abordagem são: DistEuclidConvencional, o qual aplica a função de busca diretamente, sem tratar seus resultados. 
 DistEuclidRedundante, que chama a função de busca duas vezes, a segunda chamada é feita invertendo-se os parâmetros da função, 
 somente correspondências que ocorram em ambas são guardadas. 
-DistEuclidEsc onde observa-se a continuidade de escala entre segmentos de reta traçados entre os pontos pertencentes e às correspondências geradas 
-por esta função.
+DistEuclidEsc onde observa-se a continuidade de escala entre segmentos de reta traçados entre os pontos pertencentes 
+e às correspondências geradas por esta função.
+
+
+O algoritmo SIFT, acrônimo para \textit{Scale Invariant Feature Transform}, foi publicado por David Lowe em 1999 
+e mostrou ser robusto no reconhecimento de objetos parcialmente cobertos e espalhados pela imagem.
+O algoritmo transforma uma imagem em uma coleção de vetores de feições locais, que são invariáveis a translação, variação de escala e rotação 
+e são parcialmente invariáveis a mudanças de iluminação e a projeções afim e 3D.
+Esses vetores são obtidos através da função de diferenças gaussianas no espaço de escala.
+Após esse procedimento obtém-se o gradiente e a orientação da imagem, aplicando-se a função de magnitude de gradiente $M_{ij}$ e
+a função de orientação $R_{ij}$ nos vetores obtidos. \cite{Lowe2}
+
+\begin{center}
+$M_{ij}=\sqrt{(I_{ij}-I_{i+1,j})^{2}+(I_{ij}-I_{i,j+1})^{2}}$\end{center}
+\begin{center}
+$R_{ij}=atan2(I_{ij}-I_{i+1,j},I_{i,j+1}-I_{ij})$\end{center}
+
+
+
+Nos testes foi utilizado um implementação em C++ obtida em \cite{Vedaldi}.
 
 \section{Casamento de pontos de controle}
 Após se obter os pontos de controle de ambas as imagens em que deseja-se realizar o registro,
-é necessário descobrir qual é o ponto da imagem de ajuste correspondente à um determinado ponto na imagem de referência. 
+é necessário descobrir qual é o ponto da imagem de ajuste correspondente à um determinado ponto na imagem de referência.
 
-Dentre diversos métodos existentes para se descobrir a correspondência entre os pontos, as classes de casamento do TerraLib utilizam
-o método estatístico de correlação cruzada normalizada.
-Seu funcionamento se dá ao extrair pequenas janelas ao redor de cada ponto de controle nas duas imagens.
-Aplica-se , então, aos pares o método(descrito abaixo) entre todas as janelas obtidas na imagem de referência com as obtidas na imagem de ajuste.\cite{Fedorov1}\cite{Leila1}\cite{Zhao1}
+\subsection{Correlação cruzada normalizada}
+O funcionamento do método estatístico de correlação cruzada normalizada se dá ao extrair pequenas janelas ao redor de cada ponto de controle nas duas imagens.
+Aplica-se então, aos pares o método(descrito abaixo) entre todas as janelas obtidas na imagem de referência com as obtidas na imagem de ajuste.\cite{Fedorov1}\cite{Leila1}\cite{Zhao1}
 \begin{center}
 $R(i,j)=\frac{\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}W_{z}(l,m)\cdot S_{ij}(l,m)}{\sqrt{\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}W_{z}^{2}(l,m)\overset{K-1}{\underset{l=0}{\sum}}\underset{m=0}{\overset{L-1}{\sum}}S_{ij}^{2}(l,m)}}$\end{center}
 Onde $S_{ij}$ é a janela da imagem de referência e $W_{z}$ a janela da imagem de ajuste.
 Assim, quanto maior valor de $R(i,j)$ maior é a semelhança entre as duas janelas comparadas.
+O TerraLib implenta esse método de matching em suas classes.
 
-
+\subsection{SIFT}
+O método de casamento que 
 
 \section{Transformações Geométricas}
 Com o casamento dos pontos de controle já realizado, agora é necessário aplicar funções de transformação geométrica para que se possa ter a imagem de ajuste
@@ -316,7 +351,7 @@ Sendo que $Q=n\times m$.
 Ou seja, transformações do tipo lineares são aquelas obtidas através de mutliplicações matriciais.
 Assim, através das transformações lineares pode-se realizar operações de rotação, cisalhamento e variação de escala.\cite{CGPPBook1}
 \subsubsection{Afim}
-A transformação Afim é uma transformação que compreende as operações que a transformação linear
+A transformação afim é uma transformação que compreende as operações que a transformação linear
 consegue executar mais a operação de translação. A transformada em questão pode ser definida como:
 
 \begin{center}
@@ -348,6 +383,8 @@ $\left. \frac{a_{m1}x_{1}+a_{m2}x_{2}+...+a_{mn}x_{n}+a_{mn}x_{m(n+1)}}{b_{1}x_{
 
 
 
+
+
 \section{Avaliação da Precisão do Registro}
 Uma operação importante para um sistema de registro é a avaliação da transformação computada. Sejam {g} e {G} as imagens de ajuste e referência respectivamente, e {x, y} e {X, Y} os conjuntos de pontos de controle casados que definem uma transformação de distorção {T}. Podemos verificar o quão a transformação é correta através do cálculo do erro RMSE.
 
@@ -361,23 +398,23 @@ $(x_i, y_i), (X_i, Y_i)$, $i = 1..n$ é o conjunto de pares de pontos de contole
 $T$ é a função de distorção entre as imagens obtida através do casamento de pontos de controle.
 
 
-
-\section{ Fluxograma para gerar o Mosaico}
- A montagem do mosaico se baseia em duas classes do TerraLib, o arquivo MMIOMatching recebe duas imagens e apresenta como resultado os pontos de controle da cena, que são representados através de dois vetores para calculo da função de transformação. Esses pontos localizados são acrescentados na imagem que é salva com outro nome.
-(Talvez colocar algo da dissetação do Dmitri Fedorov)
- Já o segundo arquivo  Mosaic recebe como entrada  a saida do  arquivo MMIOMatching, ou seja, os vetores  que representam os pontos de controle, além das imagens que serão mosaicadas e o nome da nova imagem.
-(Devemos definir as configurações nesse item, qual foi a função de transformação que usamos entre outros detalhes, seria interessante fazer um desenho com explicando esse clico)
-
 \section{Resultados}
 Devemos descrever quanto tempo levou para executar, quantas imagens foram utilizadas para gerar o mosaico, quais as vantagens. 
+
+No trabalho, foram feitos alguns experimentos .... ( MARCOS EH COM VC)
+
 
 \section{Comparação dos algoritmos}
 Comparação do SIFT e dos algoritmos do TerraLib
 
 \section{Conclusão}
-Conclusão aqui.
+No trabalho foram apresentados alguns resultados de testes referentes ao mosaico de seqüências de vídeos aéreos.A ideia é de aumentar a qualidade e a velocidade dos processos de mosaico e registros.
+Os testes se baseam em algoritmos extração automática como o algoritmo Mosaic do Terralib, ( descrever as vantagens do terralib) e algoritmo SIFT que diminui o impacto de algumas das variações presentes nas imagens da aplicação como: rotação, translação e escala. 
+As atuais diretrizes do projeto visam o aperfeiçoamento do sistema, para realizar: a navegação aérea autônoma de forma eficiente.
+
 
 \bibliographystyle{IEEEbib}
 \bibliography{biblio}
 
 \end{document}
+

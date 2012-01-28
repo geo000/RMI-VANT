@@ -38,6 +38,14 @@
 #include <TeInitRasterDecoders.h>
 
 #include <vector>
+#include <sys/types.h>
+#include <dirent.h>
+#include <errno.h>
+
+#include <string>
+#include <iostream>
+
+#include <algorithm>
 
 /****************************************************************************
  2.  DECLARATIONS
@@ -93,6 +101,41 @@ void raster2Jpeg(
     unsigned int tie_points_space
 );
 
+
+/****************************************************************************
+ 2.6 Funcao para ler imagens do diretorio
+*****************************************************************************/
+int getdir (string dir, vector<string> &files, string typeFile)
+{
+    DIR *dp;
+    struct dirent *dirp;
+    string imagem = "";
+    bool isImagemJPG, tipoEscolhido = false;  
+
+   if((dp  = opendir(dir.c_str())) == NULL) {
+        cout << "Error(" << errno << ") opening " << dir << endl;
+        return errno;
+    }
+ 
+    
+    while ((dirp = readdir(dp)) != NULL) {
+ 	 imagem = dirp->d_name;
+	//somente imagens com extensao JPG
+	 isImagemJPG = imagem.find(".JPG") != string::npos;
+	//IMG ou MOSAIC
+	 tipoEscolhido = imagem.find(typeFile) != string::npos;
+
+	 if(isImagemJPG && tipoEscolhido){
+	      files.push_back(string(imagem));
+	 }
+     
+    }
+
+   sort(files.begin(), files.end());
+    closedir(dp);
+    return 0;
+}
+
 /****************************************************************************
  3. MAIN FUNCTION
 *****************************************************************************/
@@ -109,53 +152,43 @@ int main()
   
   TEAGN_TRUE_OR_THROW(
         TePDIUtils::TeAllocRAMRaster( output_image, 1, 1, 1, false, TeUNSIGNEDCHAR, 0 ),
-        "output_raster Alloc error"
+        "ogetdirutput_raster Alloc  error"
   );
+
+  // Diretorio das imagens  
+  string dir = TEPDIEXAMPLESRESPATH "mosaic/";
+  // Vetores para lista de imagens Mosaic  
+  vector<string> filesMosaic = vector<string>();
+  // Vetores para lista de imagens IMG  
+  vector<string> filesIMG = vector<string>();
+  
+ //Chamada da funcao para ler imagens do diretorio. 
+  getdir(dir,filesMosaic,"Mosaic");
+  getdir(dir,filesIMG,"IMG"); 
+
+
   
   int numberOfMosaics = 3;
+
   
   for( int mosaicNumber = 0; mosaicNumber < numberOfMosaics; ++mosaicNumber)
   {
-          /******************* Matching and Mosaic Beginning *******************/
+  /******************* Matching and Mosaic Beginning *******************/
           init_time = clock() / CLOCKS_PER_SEC;
           
-          /*if( mosaicNumber == 0 ) {
-            input_image1_ptr = loadRaster( "IMG_0365.JPG" );
-            input_image2_ptr = loadRaster( "IMG_0366.JPG" );
-          } else if( mosaicNumber == 1 ) {
-            input_image1_ptr = loadRaster( "Mosaic0.JPG" );
-            input_image2_ptr = loadRaster( "IMG_0367.JPG" );
-          } else if( mosaicNumber == 2 ) {
-            input_image1_ptr = loadRaster( "Mosaic1.JPG" );
-            input_image2_ptr = loadRaster( "IMG_0368.JPG" );
-          } else if( mosaicNumber == 3 ) {
-            input_image1_ptr = loadRaster( "Mosaic2.JPG" );
-            input_image2_ptr = loadRaster( "IMG_0369.JPG" );
-          } else if( mosaicNumber == 4 ) {
-            input_image1_ptr = loadRaster( "Mosaic3.JPG" );
-            input_image2_ptr = loadRaster( "IMG_0370.JPG" );
-          } else if( mosaicNumber == 5 ) {
-            input_image1_ptr = loadRaster( "Mosaic4.JPG" );
-            input_image2_ptr = loadRaster( "IMG_0371.JPG" );
-          } else if( mosaicNumber == 6 ) {
-            input_image1_ptr = loadRaster( "Mosaic5.JPG" );
-            input_image2_ptr = loadRaster( "IMG_0372.JPG" );
-          } else if( mosaicNumber == 7 ) {
-            input_image1_ptr = loadRaster( "Mosaic6.JPG" );
-            input_image2_ptr = loadRaster( "IMG_0373.JPG" );
-          } */
-          
-          if( mosaicNumber == 0 ) {
-            input_image1_ptr = loadRaster( "Mosaic0.JPG" );
-            input_image2_ptr = loadRaster( "IMG_0366.JPG" );
-          } else if( mosaicNumber == 1 ) {
-            input_image1_ptr = loadRaster( "Mosaic0.JPG" );
-            input_image2_ptr = loadRaster( "IMG_0367.JPG" );
-          } else if( mosaicNumber == 2 ) {
-            input_image1_ptr = loadRaster( "Mosaic1.JPG" );
-            input_image2_ptr = loadRaster( "IMG_0368.JPG" );
-          }
-          
+   
+	for (unsigned int j = 0;j < filesIMG.size();j++) {
+		//Lista as imagens
+		cout << filesMosaic[filesMosaic.size() - 1] << endl;
+		cout << filesIMG[j] << endl;
+		//carrega as imagens
+
+		input_image1_ptr = loadRaster( filesMosaic[filesMosaic.size() - 1] );
+		input_image2_ptr = loadRaster( filesIMG[j] );
+		// atualiza a lista de Mosaic
+		getdir(dir,filesMosaic,"Mosaic");
+
+           
           TEAGN_LOGMSG( "Matching started" );
           gt_params = matching( input_image1_ptr, input_image2_ptr, out_tie_points_ptr );
           
@@ -189,7 +222,8 @@ int main()
           	),
           	"JPEG generation error"
           );
-  }
+  } 
+}
   
   return EXIT_SUCCESS;
 }
