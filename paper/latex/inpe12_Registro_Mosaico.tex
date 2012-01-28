@@ -181,8 +181,8 @@ e mostrou ser robusto no reconhecimento de objetos parcialmente cobertos e espal
 O algoritmo transforma uma imagem em uma coleção de vetores de feições locais, que são invariáveis a translação, variação de escala e rotação 
 e são parcialmente invariáveis a mudanças de iluminação e a projeções afim e 3D.
 Esses vetores são obtidos através da função de diferenças gaussianas no espaço de escala.
-Após esse procedimento obtém-se o gradiente e a orientação da imagem, assim, aplica-se a função de magnitude de gradiente $M_{ij}$ e
-a função de orientação $R_{ij}$ nos vetores obtidos. cite{Lowe2}
+Após esse procedimento obtém-se o gradiente e a orientação da imagem, aplicando-se a função de magnitude de gradiente $M_{ij}$ e
+a função de orientação $R_{ij}$ nos vetores obtidos. \cite{Lowe2}
 
 \begin{center}
 $M_{ij}=\sqrt{(I_{ij}-I_{i+1,j})^{2}+(I_{ij}-I_{i,j+1})^{2}}$\end{center}
