@@ -2,7 +2,7 @@
 
 $ sudo mkdir TerraLib_directory/examples/image_processing/resources/mosaic
 
-2) Copy the files contained in the data folder of github repository and paste in mosaic folder previously created
+2) Copy the files contained in the "data" folder of github repository and paste in mosaic folder previously created
 
 3) Copy and paste the file TePDIMosaic_test.cpp of github repository to the folder examples/image_processing/source/TePDIMosaic/
 
@@ -15,7 +15,6 @@ Below is an explanation of how to compile TerraLib on Ubuntu and Mac OS X Lion. 
 =================================
 How to complie TerraLib on Mac
 =================================
-How to compile TerraLib on Mac OS X 10.7
 1) Install Xcode (App Store)
 2) Install Mac Ports <http://www.macports.org/>
 3) Install cmake <http://www.cmake.org/>
@@ -55,7 +54,7 @@ How to complie TerraLib on Ubuntu
 
    $ cd / SVN_directory
 
-   $ sudo svn co https://svn.dpi.inpe.br/terralib/tags/v-4-2-0/ terralib420
+   $ svn co https://svn.dpi.inpe.br/terralib/tags/v-4-2-0/ terralib420
 
 4) Install dependencies (bin and dev)
 
