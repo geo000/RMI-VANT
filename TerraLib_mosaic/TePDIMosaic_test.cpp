@@ -77,6 +77,7 @@
  *****************************************************************************/
 double dRMSE = 0;
 double iRMSE = 0;
+int numberOfTiePoints;
 
 /****************************************************************************
  2.5 Internal function prototypes (defined in Section 4)
@@ -119,12 +120,8 @@ void rmse( TeGTParams gt_params );
  *****************************************************************************/
 int main()
 {
-    time_t init_time;
-    time_t end_time;
-    
-    long int elapsedTime = 0;
-    
-    bool penalty = false;
+    time_t init_time, of_init_time, mmio_init_time, mosaic_init_time;
+    time_t end_time, of_end_time, mmio_end_time, mosaic_end_time;
     
     TePDITypes::TePDIRasterPtrType input_image1_ptr;
     TePDITypes::TePDIRasterPtrType input_image2_ptr;
@@ -153,72 +150,82 @@ int main()
     TEAGN_LOGMSG( "Matching and Mosaic Started" );
     TEAGN_LOGMSG( Te2String( filesIMG.size() ) + " Rasters" );
     
+    for( int i = 0; i < filesIMG.size(); i++ ) {
+        cout << filesIMG[ i ] << endl;
+    }
+    
+    init_time = clock() / CLOCKS_PER_SEC;
+    
     for( int mosaicNumber = 0; mosaicNumber < numberOfMosaics; ++mosaicNumber)
     {
         /******************* Matching and Mosaic Beginning *******************/
-        init_time = clock() / CLOCKS_PER_SEC;
-        
         if( mosaicNumber == 0 ) {
             input_image1_ptr = loadRaster( filesIMG[0] );
             input_image2_ptr = loadRaster( filesIMG[1] );
         } else {
-            input_image1_ptr = loadRaster( "Mosaic" + Te2String(mosaicNumber - 1) + ".JPG" );
+            input_image1_ptr = loadRaster( "Mosaic" + Te2String(mosaicNumber - 1) + ".jpg" );
             input_image2_ptr = loadRaster( filesIMG[ mosaicNumber + 1 ] );
         }
         
-        if ( penalty == false ) {
-            TEAGN_LOGMSG( "Matching started :: Optical Flow" );
-            gt_params = matchingOF( input_image1_ptr, input_image2_ptr, out_tie_points_ptr );
-        }
+        TEAGN_LOGMSG( "Matching started :: Optical Flow" );
+        of_init_time = clock() / CLOCKS_PER_SEC;
+        gt_params = matchingOF( input_image1_ptr, input_image2_ptr, out_tie_points_ptr );
+        of_end_time = clock() / CLOCKS_PER_SEC;
+        TEAGN_LOGMSG(
+                     "Optical Flow Time: " +
+                     TeAgnostic::to_string( (long int)( of_end_time - of_init_time ) ) +
+                     " seconds"
+        );
+        
                 
-        if ( dRMSE < 1.5 || dRMSE > 3.5 || penalty == true ) {
-            
-            if ( penalty == false ) {
-                TEAGN_LOGMSG( "Optical Flow did not show satisfactory results" );
-                penalty = true;
-            } else {
-                penalty = false;
-            }
-            
+        if ( dRMSE < 1.0 || dRMSE > 3.5 || numberOfTiePoints < 5 ) {
+            TEAGN_LOGMSG( "Optical Flow did not show satisfactory results" );
             TEAGN_LOGMSG( "Matching started :: Modified Moravec Interest Operator based image area matching" );
-            
+            mmio_init_time = clock() / CLOCKS_PER_SEC;
             gt_params = matchingMMIO( input_image1_ptr, input_image2_ptr, out_tie_points_ptr );
+            mmio_end_time = clock() / CLOCKS_PER_SEC;
+            TEAGN_LOGMSG(
+                         "Moravec Time: " +
+                         TeAgnostic::to_string( (long int)( mmio_end_time - mmio_init_time ) ) +
+                         " seconds"
+            );
         }
         
         TEAGN_LOGMSG( "Mosaic started" );
+        mosaic_init_time = clock() / CLOCKS_PER_SEC;
         mosaic( input_image1_ptr, input_image2_ptr, output_image, gt_params );
-        
-        end_time = clock() / CLOCKS_PER_SEC;
-        elapsedTime += end_time - init_time;
+        mosaic_end_time = clock() / CLOCKS_PER_SEC;
         TEAGN_LOGMSG(
-                     "Time: " +
-                     TeAgnostic::to_string( (long int)( end_time - init_time ) ) +
+                     "Mosaic Time: " +
+                     TeAgnostic::to_string( (long int)( mosaic_end_time - mosaic_init_time ) ) +
                      " seconds"
-                     );
+        );
+
+        end_time = clock() / CLOCKS_PER_SEC;
         
         TEAGN_LOGMSG(
                      "Total Elapsed time: " +
-                     TeAgnostic::to_string( (long int)( elapsedTime ) ) +
-                     " seconds"
-                     );
+                     TeAgnostic::to_string( (float)( (end_time - init_time) / 60.0 ) ) +
+                     " minutes"
+        );
 
         /*******************    Matching and Mosaic End    *******************/
         
 //        TEAGN_LOGMSG( "Saving Images with Tie-points" );
 //        raster2Jpeg(
 //                    input_image1_ptr, 3,
-//                    TEPDIEXAMPLESRESPATH "mosaic/Tie_Points" + Te2String(mosaicNumber) + "a.JPG", out_tie_points_ptr, 0
+//                    TEPDIEXAMPLESRESPATH "mosaic/Tie_Points" + Te2String(mosaicNumber) + "a.jpg", out_tie_points_ptr, 0
 //                    );
 //        raster2Jpeg(
 //                    input_image2_ptr, 3,
-//                    TEPDIEXAMPLESRESPATH "mosaic/Tie_Points" + Te2String(mosaicNumber) + "b.JPG", out_tie_points_ptr, 1
+//                    TEPDIEXAMPLESRESPATH "mosaic/Tie_Points" + Te2String(mosaicNumber) + "b.jpg", out_tie_points_ptr, 1
 //                    );
         
         TEAGN_LOGMSG( "Saving Mosaic Result" );
         TEAGN_TRUE_OR_THROW(
                             TePDIUtils::TeRaster2Jpeg(
                                                       output_image,
-                                                      TEPDIEXAMPLESRESPATH "mosaic/Mosaic" + Te2String(mosaicNumber) + ".JPG",
+                                                      TEPDIEXAMPLESRESPATH "mosaic/Mosaic" + Te2String(mosaicNumber) + ".jpg",
                                                       false, 100
                                                       ),
                             "JPEG generation error"
@@ -345,6 +352,8 @@ TeGTParams matchingMMIO(
     TEAGN_TRUE_OR_THROW( match_instance.Apply(), "Algorithm apply error" );
     
 //    TEAGN_LOGMSG( "Load Tie-points" );
+    numberOfTiePoints = 0;
+    
     TeCoordPair auxPair;
     TeCoordPairVect::iterator it     = out_tie_points_ptr->begin();
     TeCoordPairVect::iterator it_end = out_tie_points_ptr->end();
@@ -358,8 +367,11 @@ TeGTParams matchingMMIO(
 //        Te2String( it->pt2.x(),1 ) + " , " + 
 //        Te2String( it->pt2.y(),1 ) + "]" << std::endl;
         
+        ++numberOfTiePoints;
         ++it;
     }
+    
+    TEAGN_LOGMSG( Te2String( numberOfTiePoints ) + " Tie points" );
     
     out_tie_points_ptr_ = out_tie_points_ptr;
     
@@ -479,6 +491,8 @@ TeGTParams matchingOF(
     TEAGN_TRUE_OR_THROW( match_instance.Apply(), "Algorithm apply error" )
     
 //    TEAGN_LOGMSG( "Load Tie-points" );
+    numberOfTiePoints = 0;
+    
     TeCoordPair auxPair;
     TeCoordPairVect::iterator it     = out_tie_points_ptr->begin();
     TeCoordPairVect::iterator it_end = out_tie_points_ptr->end();
@@ -492,8 +506,11 @@ TeGTParams matchingOF(
 //        Te2String( it->pt2.x(),1 ) + " , " + 
 //        Te2String( it->pt2.y(),1 ) + "]" << std::endl;
         
+        ++numberOfTiePoints;
         ++it;
     }
+    
+    TEAGN_LOGMSG( Te2String( numberOfTiePoints ) + " Tie points" );
     
     out_tie_points_ptr_ = out_tie_points_ptr;
     
@@ -688,6 +705,10 @@ int getImages (string dir, vector<string> &files, string typeFile)
         imagem = dirp->d_name;
         //somente imagens com extensao JPG
         isImagemJPG = imagem.find(".JPG") != string::npos;
+        if( !isImagemJPG ) {
+            isImagemJPG = imagem.find(".jpg") != string::npos;
+        }
+        
         //IMG ou MOSAIC
         tipoEscolhido = imagem.find(typeFile) != string::npos;
         
