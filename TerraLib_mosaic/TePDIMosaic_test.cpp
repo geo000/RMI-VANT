@@ -745,3 +745,5 @@ void rmse( TeGTParams gt_params )
     cout << "Direct mapping RMSE:  " << dRMSE << endl;
     cout << "Inverse mapping RMSE: " << iRMSE << endl;    
 }
+
+/*****************************************************************************/
