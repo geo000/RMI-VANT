@@ -300,7 +300,7 @@ $F(x)=\left( \frac{a_{11}x_{1}+a_{12}x_{2}+...+a_{1n}x_{n}+a_{1n}x_{1(n+1)}}{b_{
 $\left. \frac{a_{m1}x_{1}+a_{m2}x_{2}+...+a_{mn}x_{n}+a_{mn}x_{m(n+1)}}{b_{1}x_{1}+b_{2}x_{2}+...+b_{n}x_{n}+b_{n+1}} \right)$\end{center}
 
 \section{Avaliação da Precisão do Registro}
-Uma operação importante para um sistema de registro é a avaliação da transformação computada. Sejam {g} e {G} as imagens de ajuste e referência respectivamente, e {x, y} e {X, Y} os conjuntos de pontos de controle casados que definem uma transformação de distorção {T}. Podemos verificar o quão a transformação é correta através do cálculo do erro RMSE.
+Uma operação importante para um sistema de registro é a avaliação da transformação computada. Sejam {g} e {G} as imagens de ajuste e referência respectivamente, e {x, y} e {X, Y} os conjuntos de pontos de controle casados que definem uma transformação de distorção {T}. Pode-se verificar o quão a transformação é correta através do cálculo do erro RMSE.
 
 $$
 	RMSE = \sqrt{\frac{1}{n}\sum\limits_{i=1}^{n}(x_i - T(X_i))^2 + (y_i - T(Y_i))^2}
@@ -309,11 +309,11 @@ $$
 onde:
 
 $(x_i, y_i), (X_i, Y_i)$, $i = 1..n$ é o conjunto de pares de pontos de contole obtidos no processo de casamento.
-$T$ é a função de distorção entre as imagens obtida através do casamento de pontos de controle.
+$T$ é a função de distorção entre as imagens obtida através do casamento de pontos de controle.\cite{Fedorov1}
 
 \section{ Sistema Automático Para Registro e Mosaico }
  
-O sistema implementado está separado em duas partes baseados em algoritmos do Terralib: a) A primeira parte se refere ao bloco MMIOMatching e OFMatching, onde duas imagens são utilizados como parâmetros do bloco e como resultado são apresentados o registro e extração dos pontos de controles. Esses pontos de controle são representados através de dois vetores para calculo da função de transformação, onde são localizados e acrescentados na nova imagem resultante. b) A Segunda parte se refere ao bloco Mosaic, que recebe como parâmetros de entrada a saída do primeiro bloco, ou seja, os vetores  que representam os pontos de controle. Além disso, são parâmetros de entrada as imagens que serão mosaicadas e o nome da nova imagem que apresentará o resultado do mosaico. Veja a Figura~\ref{fig:estrutura_logica} que apresenta a estrutura lógica de funcionamento do sistema.
+O sistema implementado está separado em duas partes baseados em algoritmos do Terralib: a) A primeira parte se refere ao bloco \texttt{MMIOMatching} e \texttt{OFMatching}, onde duas imagens são utilizados como parâmetros do bloco e como resultado são apresentados o registro e extração dos pontos de controles. Esses pontos de controle são representados através de dois vetores para calculo da função de transformação, onde são localizados e acrescentados na nova imagem resultante. b) A Segunda parte se refere ao bloco Mosaic, que recebe como parâmetros de entrada a saída do primeiro bloco, ou seja, os vetores  que representam os pontos de controle. Além disso, são parâmetros de entrada as imagens que serão mosaicadas e o nome da nova imagem que apresentará o resultado do mosaico. Veja a Figura~\ref{fig:estrutura_logica} que apresenta a estrutura lógica de funcionamento do sistema.
 
 \begin{figure}[h!t]
 \begin{center}
@@ -323,11 +323,11 @@ O sistema implementado está separado em duas partes baseados em algoritmos do T
 \end{center} 
 \end{figure}
 
-Realizamos vários testes empíricos, e para alcançarmos resultados satisfatórios desenvolvemos um sistema hibrido utilizando os dois métodos de registro. O método MMIOMatching apresentou resultados melhores para os testes realizados, todavia é mais lento que o método OFMatching. Este último método, foi o mais rápido para realização do registro, e em algumas cenas, embora apresentasse o valor de erro RMSE baixo, encontrava poucos pontos de controle, e por consequência o mosaico utilizando esses pontos apresentavam grandes distorções. Através dos testes realizados chegamos a seguinte configuração:
+Foram realizados vários testes empíricos, e para alcançarmos resultados satisfatórios desenvolvemos um sistema hibrido utilizando os dois métodos de registro. O método \texttt{MMIOMatching} apresentou resultados melhores para os testes realizados, todavia é mais lento que o método \texttt{OFMatching}. Este último método, foi o mais rápido para realização do registro, e em algumas cenas, embora apresentasse o valor de erro RMSE baixo, encontrava poucos pontos de controle, e por consequência o mosaico utilizando esses pontos apresentavam grandes distorções. Através dos testes realizados chegamos a seguinte configuração:
 
 \subsection{Configuração do Sistema}
 \begin{enumerate}
-\item MMIOMatching
+\item \texttt{MMIOMatching}
 	\begin{enumerate}
 	 \item Tipo de transformação geométrica: Afim.
 	 \item Estratégia de Remoção de pontos divergentes: Remoção aleatória.
@@ -337,7 +337,7 @@ Realizamos vários testes empíricos, e para alcançarmos resultados satisfatór
 	 \item Tamanho da janela de correlação: 45x45 pixels.
 	 \item Tamanho da janela do Operador Moravec :11x11 pixels.
 	\end{enumerate}
- \item OFMatching
+ \item \texttt{OFMatching}
 	 \begin{enumerate}
 	  \item Tipo de transformação geométrica: Afim.
 	  \item Estratégia de Remoção de pontos divergentes: Remoção aleatória.
@@ -358,9 +358,9 @@ Realizamos vários testes empíricos, e para alcançarmos resultados satisfatór
 
 O sistema registra e mosaica as imagens de maneira automática, e para isso é apenas informado o caminho da pasta que contém as imagens a serem registradas e mosaicadas. Cada mosaico gerado é salvo dentro dessa mesma pasta.
 
-A heurística para a escolha do algoritmo de registro começa primeiramente executando o registro utilizando o método OFMatching por ser mais rápido. Ao final do registro é analisado o valor do erro RMSE e a quantidade de pontos encontrados. Se a quantidade de pontos e o valor do erro RMSE satisfazer um determinado limiar, então efetua-se o mosaico de duas imagens utilizando os pontos de controle e a transformação geométrica calculada. O processo é reinciado até que acabe a lista de imagens selecionadas para a realização de registro e mosaico.
+A heurística para a escolha do algoritmo de registro começa primeiramente executando o registro utilizando o método \texttt{OFMatching} por ser mais rápido. Ao final do registro é analisado o valor do erro RMSE e a quantidade de pontos encontrados. Se a quantidade de pontos e o valor do erro RMSE satisfazer um determinado limiar, então efetua-se o mosaico de duas imagens utilizando os pontos de controle e a transformação geométrica calculada. O processo é reinciado até que acabe a lista de imagens selecionadas para a realização de registro e mosaico.
 
-Todavia, se a quantidade de pontos de controle e o erro RMSE não atenderem ao limiar definido, então é executado o algoritmo MMIOMathcing para encontrar os novos pontos de controle e em seguida o mosaico das duas imagens através dos novos valores calculados, e o processo é reiniciado.
+Todavia, se a quantidade de pontos de controle e o erro RMSE não atenderem ao limiar definido, então é executado o algoritmo \texttt{MMIOMatching} para encontrar os novos pontos de controle e em seguida o mosaico das duas imagens através dos novos valores calculados, e o processo é reiniciado.
 
 \section{Resultados}
 
@@ -376,7 +376,7 @@ As imagens analisadas foram coletadas por uma câmera digital a bordo de um VANT
 
 A Tabela~\ref{tab:resultados} apresenta a quantidade de pontos de controle encontrados pelo algoritmo, os valores de erro RMSE para mapeamento direto e inverso, tempo de processamento, imagens que comporam o processamento e se o resultado foi ou não aceito. Os resultados foram conseguidos executando a implementação em um laptop com processador Intel Core i5 de 2,4 GHz com dois núcleos de processamento e 4 GB de memória ram 1333 MHz DDR3.
 
-Analisando os resultados, percebemos que o algoritmo OFMatching embora muito rápido, obteve poucos resultados aceitos, porém isso não significa que o algoritmo não é bom para realizar registro de imagens aéreas. Esse algoritmo não obteve muito sucesso devido as imagens escolhidas serem as mais difíceis de registrar, todavia em outros testes executados em imagens que não apresentavam muito ruído e rotações, esse algoritmo foi muito bem sucedido. Embora mais lento, o algoritmo MMIOMatching foi o que obteve os melhores resultados.
+Analisando os resultados, percebemos que o algoritmo \texttt{OFMatching} embora muito rápido, obteve poucos resultados aceitos, porém isso não significa que o algoritmo não é bom para realizar registro de imagens aéreas. Esse algoritmo não obteve muito sucesso devido as imagens escolhidas serem as mais difíceis de registrar, todavia em outros testes executados em imagens que não apresentavam muito ruído e rotações, esse algoritmo foi muito bem sucedido. Embora mais lento, o algoritmo \texttt{MMIOMatching} foi o que obteve os melhores resultados.
 
 \begin{table*}[!hb]
 \small
@@ -431,7 +431,7 @@ MMIOMatching	&38	&2.78	&2.96	&1456 segundos	&mos12 e img14 &sim\\
 \section{Conclusão}
 No trabalho foram apresentados alguns resultados de testes referentes ao mosaico de seqüências de imagens aéreas, onde procuramos aumentar a qualidade e a velocidade dos processos de mosaico e registros. Os testes se basearam em algoritmos implementados na biblioteca TerraLib e apresentaram resultados satisfatórios, porém com tempo de processamento muito alto.
 
-\bibliographystyle{IEEEtran}
+\bibliographystyle{IEEEbib}
 \bibliography{biblio}
 
 \clearpage
